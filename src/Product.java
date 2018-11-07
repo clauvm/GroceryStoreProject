@@ -1,7 +1,7 @@
 /*Claudia Vaquera*/
 public class Product {
     private String name;
-    private double price;
+    private float price;
     private int barcode;
 
     /**
@@ -11,7 +11,7 @@ public class Product {
      * @param price
      * @param barcode
      */
-    public Product(String name, double price, int barcode) {
+    public Product(String name, float price, int barcode) {
         this.name = name;
         this.price = price;
         this.barcode = barcode;
@@ -29,7 +29,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -40,6 +40,7 @@ public class Product {
     public void setBarcode(int barcode) {
         this.barcode = barcode;
     }
+
 
     @Override
     public String toString() {
