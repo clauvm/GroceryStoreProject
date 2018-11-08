@@ -15,4 +15,13 @@ public class GenericProduct extends Product {
         this.count = count;
     }
 
+    @Override
+    public String toString() {
+        String result = "Product Name : " + super.getName() + "\n";
+        result += "Product Price : " + String.valueOf(super.getPrice()) + "\n";
+        result += "Product Barcode : " + super.getBarcode() + "\n";
+        result += "Product Count : " + this.getCount() + "\n\n";
+        return result;
+    }
+
 }

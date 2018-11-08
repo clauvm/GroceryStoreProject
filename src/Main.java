@@ -38,18 +38,9 @@ public class Main {
                         break;
                     case 5:
                         groceryStore.informationToAddOrRemoveProducts(1);
-//                        System.out.println("Enter the index of the product you want to remove");
-//                        BufferedReader bufferedReaderIndexRemove = new BufferedReader(new InputStreamReader(System.in));
-//                        int indexRemove = Integer.parseInt(bufferedReaderIndexRemove.readLine());
-//                        int lengthBasketProducts = groceryStore.getClient().getBasket().getListProducts().size();
-//                        if (indexRemove <= lengthBasketProducts && indexRemove > 0) {
-//                            groceryStore.getClient().getBasket().removeItem(indexRemove - 1);
-//                        } else {
-//                            System.out.println("Invalid index");
-//                        }
                         break;
                     case 6:
-//                        System.out.println(groceryStore.getClient().getBasket().getListProducts());
+                        groceryStore.informationToPrintBasket();
                         break;
                 }
 
@@ -57,7 +48,7 @@ public class Main {
                 System.out.println("Error: The value entered is not a valid option");
             }
 
-        } while (option != 6);
+        } while (option != 7);
 
     }
 

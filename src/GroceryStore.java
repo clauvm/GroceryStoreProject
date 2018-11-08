@@ -81,6 +81,13 @@ public class GroceryStore implements GroceryStoreInterface {
         Product temp = new Product("test", 0, barcode);
         return list.contains(temp);
     }
+
+    public void informationToPrintBasket() throws IOException {
+        System.out.println("Client id?");
+        BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
+        int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
+        printBasket(clientId);
+    }
     /**
      * Add products to grocery store
      *
@@ -129,18 +136,17 @@ public class GroceryStore implements GroceryStoreInterface {
         int clientIndex = compareClientId(customerId);
         if (clientIndex >= 0) {
             Client client = (Client) this.clientList.get(clientIndex);
-            LinkedList clientsProducts = client.getBasket().getListProducts();
-            int productClientIndex = compareBarcodeId(barcodeId, clientsProducts);
+            int productClientIndex = compareBarcodeId(barcodeId, client.getBasket().getListProducts());
             int productStoreIndex = compareBarcodeId(barcodeId, this.productList);
             if (productClientIndex >= 0) {
-                GenericProduct product = (GenericProduct) clientsProducts.get(productClientIndex);
+                GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(productClientIndex);
                 GenericProduct productGlobal = (GenericProduct) this.productList.get(productStoreIndex);
                 int productQuantity = product.getCount();
                 if (productQuantity > count) {
                     product.setCount(productQuantity - count);
                     productGlobal.setCount(productGlobal.getCount() + count);
                 } else if (productQuantity == count) {
-                    clientsProducts.removeByIndex(productClientIndex);
+                    client.getBasket().getListProducts().removeByIndex(productClientIndex);
                     productGlobal.setCount(productGlobal.getCount() + count);
                 } else {
                     System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
@@ -151,7 +157,10 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void printBasket(int customerId) {
-
+        int clientIndex = compareClientId(customerId);
+        Client client = (Client) this.clientList.get(clientIndex);
+//        client.getBasket().getListProducts();
+        System.out.println(client.getBasket().getListProducts().toString());
     }
 
     public float computeBasketPrice(int customerId) {

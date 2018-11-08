@@ -41,15 +41,6 @@ public class Product implements Comparable {
         this.barcode = barcode;
     }
 
-
-    @Override
-    public String toString() {
-        String result = "Product Name : " + this.getName() + "\n";
-        result += "Product Price : " + String.valueOf(this.getPrice()) + "\n";
-        result += "Product Barcode : " + this.getBarcode() + "\n\n";
-        return result;
-    }
-
     public int compareTo(Object productToCompare) {
         Product product = (Product) productToCompare;
         return ((Comparable) barcode).compareTo(product.barcode);
