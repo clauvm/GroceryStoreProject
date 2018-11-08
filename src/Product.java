@@ -1,5 +1,5 @@
 /*Claudia Vaquera*/
-public class Product {
+public class Product implements Comparable {
     private String name;
     private float price;
     private int barcode;
@@ -25,7 +25,7 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
@@ -48,7 +48,11 @@ public class Product {
         result += "Product Price : " + String.valueOf(this.getPrice()) + "\n";
         result += "Product Barcode : " + this.getBarcode() + "\n\n";
         return result;
+    }
 
+    public int compareTo(Object productToCompare) {
+        Product product = (Product) productToCompare;
+        return ((Comparable) barcode).compareTo(product.barcode);
     }
 
 }

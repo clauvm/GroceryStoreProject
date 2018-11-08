@@ -12,8 +12,12 @@ public class Basket {
      *
      * @param item
      */
-    public void addItem(Product item) {
-        listProducts.addLast(item);
+    public void addItem(GenericProduct item, int count) {
+        String name = item.getName();
+        float price = item.getPrice();
+        int barcode = item.getBarcode();
+        GenericProduct test = new GenericProduct(name, price, barcode, count);
+        listProducts.addLast(test);
     }
 
     /**

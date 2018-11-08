@@ -2,11 +2,11 @@
 public class LinkedList {
 
     private class ListElement {
-        private Object el1;
+        private Comparable el1;
         private ListElement el2;
 
 
-        public ListElement(Object el, ListElement nextElement) {
+        public ListElement(Comparable el, ListElement nextElement) {
             el1 = el;
             el2 = nextElement;
         }
@@ -17,7 +17,7 @@ public class LinkedList {
          * @param el
          */
 
-        public ListElement(Object el) {
+        public ListElement(Comparable el) {
             this(el, null);
         }
 
@@ -26,7 +26,7 @@ public class LinkedList {
          *
          * @return
          */
-        public Object first() {
+        public Comparable first() {
             return el1;
         }
 
@@ -44,7 +44,7 @@ public class LinkedList {
          *
          * @param value
          */
-        public void setFirst(Object value) {
+        public void setFirst(Comparable value) {
             el1 = value;
         }
 
@@ -72,7 +72,7 @@ public class LinkedList {
      *
      * @param o
      */
-    public void addFirst(Object o) {
+    public void addFirst(Comparable o) {
         head = new ListElement(o, head);
     }
 
@@ -81,7 +81,7 @@ public class LinkedList {
      *
      * @return
      */
-    public Object getFirst() {
+    public Comparable getFirst() {
         return head.first();
     }
 
@@ -91,7 +91,7 @@ public class LinkedList {
      * @param n
      * @return
      */
-    public Object get(int n) {
+    public Comparable get(int n) {
         ListElement d = head;
         while (n > 0) {
             d = d.rest();
@@ -138,7 +138,7 @@ public class LinkedList {
      * @param n
      * @param o
      */
-    public void set(int n, Object o) {
+    public void set(int n, Comparable o) {
         int count = 1;
         ListElement d = head;
         while (d != null) {
@@ -156,7 +156,7 @@ public class LinkedList {
      *
      * @return
      */
-    public Object getLast() {
+    public Comparable getLast() {
         ListElement d = head;
         while (d.rest() != null) {
             d = d.rest();
@@ -169,7 +169,7 @@ public class LinkedList {
      *
      * @param o
      */
-    public void addLast(Object o) {
+    public void addLast(Comparable o) {
         ListElement d = head;
         if (d == null) {
             addFirst(o);
@@ -183,20 +183,22 @@ public class LinkedList {
     }
 
     /**
-     * Verify if a given object is part of the list
+     * Verify if a given Comparable is part of the list
      *
      * @param o
      * @return
      */
-    public boolean contains(Object o) {
+    public int contains(Comparable o) {
         ListElement d = head;
+        int index = 0;
         while (d != null) {
-            if (d.first() == o) {
-                return true;
+            if (d.first().compareTo(o) == 0) {
+                return index;
             }
             d = d.rest();
+            index++;
         }
-        return false;
+        return -1;
     }
 
     /**

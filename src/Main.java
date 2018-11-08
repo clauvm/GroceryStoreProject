@@ -28,39 +28,28 @@ public class Main {
                         groceryStore.fillInformationNewClient();
                         break;
                     case 2:
-                        groceryStore.fillInformationNewProduct(1);
+                        groceryStore.fillInformationNewProduct(0);
                         break;
                     case 3:
-                        groceryStore.fillInformationNewProduct(2);
+                        groceryStore.fillInformationNewProduct(1);
                         break;
                     case 4:
-                        //List all products
-                        System.out.println(groceryStore.getProductList());
-                        System.out.println("Enter the index of the product you want to add");
-                        BufferedReader bufferedReaderIndexAdd = new BufferedReader(new InputStreamReader(System.in));
-                        int indexAdd = Integer.parseInt(bufferedReaderIndexAdd.readLine());
-                        // get the selected product by index
-                        int lengthOfProducts = groceryStore.getProductList().size();
-                        if (indexAdd <= lengthOfProducts && indexAdd > 0) {
-                            Product productToAddToBasket = (Product) groceryStore.getProductList().get(indexAdd - 1);
-                            groceryStore.getClient().getBasket().addItem(productToAddToBasket);
-                        } else {
-                            System.out.println("Invalid index");
-                        }
+                        groceryStore.informationToAddOrRemoveProducts(0);
                         break;
                     case 5:
-                        System.out.println("Enter the index of the product you want to remove");
-                        BufferedReader bufferedReaderIndexRemove = new BufferedReader(new InputStreamReader(System.in));
-                        int indexRemove = Integer.parseInt(bufferedReaderIndexRemove.readLine());
-                        int lengthBasketProducts = groceryStore.getClient().getBasket().getListProducts().size();
-                        if (indexRemove <= lengthBasketProducts && indexRemove > 0) {
-                            groceryStore.getClient().getBasket().removeItem(indexRemove - 1);
-                        } else {
-                            System.out.println("Invalid index");
-                        }
+                        groceryStore.informationToAddOrRemoveProducts(1);
+//                        System.out.println("Enter the index of the product you want to remove");
+//                        BufferedReader bufferedReaderIndexRemove = new BufferedReader(new InputStreamReader(System.in));
+//                        int indexRemove = Integer.parseInt(bufferedReaderIndexRemove.readLine());
+//                        int lengthBasketProducts = groceryStore.getClient().getBasket().getListProducts().size();
+//                        if (indexRemove <= lengthBasketProducts && indexRemove > 0) {
+//                            groceryStore.getClient().getBasket().removeItem(indexRemove - 1);
+//                        } else {
+//                            System.out.println("Invalid index");
+//                        }
                         break;
                     case 6:
-                        System.out.println(groceryStore.getClient().getBasket().getListProducts());
+//                        System.out.println(groceryStore.getClient().getBasket().getListProducts());
                         break;
                 }
 

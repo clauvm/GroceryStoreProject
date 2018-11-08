@@ -1,5 +1,5 @@
 /* Claudia Vaquera*/
-public class Client {
+public class Client implements Comparable {
 
     private String name;
     private Basket basket;
@@ -22,5 +22,10 @@ public class Client {
 
     public void setBasket(Basket basket) {
         this.basket = basket;
+    }
+
+    public int compareTo(Object clientToCompare) {
+        Client currentClient = (Client) clientToCompare;
+        return ((Comparable) id).compareTo(currentClient.id);
     }
 }
