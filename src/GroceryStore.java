@@ -112,7 +112,6 @@ public class GroceryStore implements GroceryStoreInterface {
                 if (clientIndex >= 0) {
                     Client client = (Client) this.clientList.get(clientIndex);
                     client.getBasket().addItem(product, count);
-//                    GenericProduct clientsList = client.getBasket().getListProducts();
                     product.setCount(product.getCount() - count);
                 } else {
                     System.out.println("Costumer id not valid");
@@ -131,8 +130,22 @@ public class GroceryStore implements GroceryStoreInterface {
         if (clientIndex >= 0) {
             Client client = (Client) this.clientList.get(clientIndex);
             LinkedList clientsProducts = client.getBasket().getListProducts();
-            int productIndex = compareBarcodeId(barcodeId, clientsProducts);
-            System.out.println("Is product in clients basket? " + productIndex);
+            int productClientIndex = compareBarcodeId(barcodeId, clientsProducts);
+            int productStoreIndex = compareBarcodeId(barcodeId, this.productList);
+            if (productClientIndex >= 0) {
+                GenericProduct product = (GenericProduct) clientsProducts.get(productClientIndex);
+                GenericProduct productGlobal = (GenericProduct) this.productList.get(productStoreIndex);
+                int productQuantity = product.getCount();
+                if (productQuantity > count) {
+                    product.setCount(productQuantity - count);
+                    productGlobal.setCount(productGlobal.getCount() + count);
+                } else if (productQuantity == count) {
+                    clientsProducts.removeByIndex(productClientIndex);
+                    productGlobal.setCount(productGlobal.getCount() + count);
+                } else {
+                    System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
+                }
+            }
         }
 
     }
