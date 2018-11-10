@@ -10,12 +10,14 @@ public class GroceryStore implements GroceryStoreInterface {
     private LinkedList freshProductList;
     private LinkedList clientList;
     private int idClient;
+    private Queue requestingFreshList;
 
     public GroceryStore() {
         this.productList = new LinkedList();
         this.freshProductList = new LinkedList();
         this.clientList = new LinkedList();
         this.idClient = 0;
+        this.requestingFreshList = new Queue();
     }
 
     public void fillInformationNewProduct(int type) throws IOException {
@@ -55,21 +57,30 @@ public class GroceryStore implements GroceryStoreInterface {
         System.out.println("Enter your client id");
         BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
         int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
+        System.out.println("Enter the barcode of the product");
+        BufferedReader bufferedReaderProductBarcode = new BufferedReader(new InputStreamReader(System.in));
+        int productBarcode = Integer.parseInt(bufferedReaderProductBarcode.readLine());
         System.out.println("Enter the number of the packages of the product");
         BufferedReader bufferedReaderQuantityPackages = new BufferedReader(new InputStreamReader(System.in));
         int quantityPackages = Integer.parseInt(bufferedReaderQuantityPackages.readLine());
         if (type == 0) {
-            System.out.println(getProductList());
-            System.out.println("Enter the barcode of the product you want to add");
-            BufferedReader bufferedReaderProductBarcode = new BufferedReader(new InputStreamReader(System.in));
-            int productBarcode = Integer.parseInt(bufferedReaderProductBarcode.readLine());
             addToBasket(productBarcode, quantityPackages, clientId);
         } else {
-            System.out.println("Enter the barcode of the product you want to remove");
-            BufferedReader bufferedReaderProductBarcode = new BufferedReader(new InputStreamReader(System.in));
-            int productBarcode = Integer.parseInt(bufferedReaderProductBarcode.readLine());
             removeFromBasket(productBarcode, quantityPackages, clientId);
         }
+    }
+
+    public void fillInformationAddFreshProduct() throws IOException {
+        System.out.println("Enter your client id");
+        BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
+        int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
+        System.out.println("Enter the barcode of the product");
+        BufferedReader bufferedReaderBarcodeId = new BufferedReader(new InputStreamReader(System.in));
+        int barcodeId = Integer.parseInt(bufferedReaderBarcodeId.readLine());
+        System.out.println("Enter the amount of the product");
+        BufferedReader bufferedReaderAmount = new BufferedReader(new InputStreamReader(System.in));
+        float amount = Float.parseFloat(bufferedReaderAmount.readLine());
+        requestFreshProduct(barcodeId, amount, clientId);
     }
 
     public int compareClientId(int id) {
@@ -82,11 +93,24 @@ public class GroceryStore implements GroceryStoreInterface {
         return list.contains(temp);
     }
 
-    public void informationToPrintBasket() throws IOException {
+    public void printStoreProducts() {
+        System.out.println(getProductList());
+    }
+
+    public void printStoreFreshProducts() {
+        System.out.println(getFreshProductList());
+    }
+
+    public void printOrComputeForClient(int type) throws IOException {
         System.out.println("Client id?");
         BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
         int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
-        printBasket(clientId);
+        if (type == 0) {
+            printBasket(clientId);
+        } else {
+            System.out.println("the total price of the basket is: " + computeBasketPrice(clientId));
+        }
+
     }
     /**
      * Add products to grocery store
@@ -112,7 +136,7 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public void addToBasket(int barcodeId, int count, int customerId) {
         int clientIndex = compareClientId(customerId);
-        int productIndex = compareBarcodeId(barcodeId, productList);
+        int productIndex = compareBarcodeId(barcodeId, this.productList);
         if (productIndex >= 0) {
             GenericProduct product = (GenericProduct) this.productList.get(productIndex);
             if (product.getCount() >= count) {
@@ -159,24 +183,60 @@ public class GroceryStore implements GroceryStoreInterface {
     public void printBasket(int customerId) {
         int clientIndex = compareClientId(customerId);
         Client client = (Client) this.clientList.get(clientIndex);
-//        client.getBasket().getListProducts();
         System.out.println(client.getBasket().getListProducts().toString());
     }
 
     public float computeBasketPrice(int customerId) {
-        return 0;
+        int clientIndex = compareClientId(customerId);
+        if (clientIndex >= 0) {
+            Client client = (Client) this.clientList.get(clientIndex);
+            float total = 0;
+            for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
+                if (client.getBasket().getListProducts().get(i) instanceof GenericProduct) {
+                    GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(i);
+                    total += product.getPrice() * product.getCount();
+                } else if (client.getBasket().getListProducts().get(i) instanceof FreshProduct) {
+                    FreshProduct product = (FreshProduct) client.getBasket().getListProducts().get(i);
+                    total += product.getPrice() * product.getAmountInKg();
+                }
+            }
+            return total;
+        }
+        return -1;
     }
 
     public void requestFreshProduct(int barcodeId, float amount, int customerId) {
-
+        int clientIndex = compareClientId(customerId);
+        if (clientIndex >= 0) {
+            int productStoreIndex = compareBarcodeId(barcodeId, this.freshProductList);
+            if (productStoreIndex >= 0) {
+                FreshProductRequested request = new FreshProductRequested(customerId, barcodeId, amount);
+                this.requestingFreshList.push(request);
+            }
+        }
     }
 
     public boolean serveNextRequest() {
-        return true;
+        FreshProductRequested request = (FreshProductRequested) this.requestingFreshList.top();
+        int barcode = request.getBarcodeId();
+        int freshProductIndex = compareBarcodeId(barcode, this.freshProductList);
+        FreshProduct product = (FreshProduct) this.freshProductList.get(freshProductIndex);
+        if (product.getAmountInKg() >= request.getAmount()) {
+            int clientIndex = compareClientId(request.getCustomerId());
+            Client client = (Client) this.clientList.get(clientIndex);
+            client.getBasket().addFreshProduct(product, request.getAmount());
+            product.setAmountInKg(product.getAmountInKg() - request.getAmount());
+            this.requestingFreshList.pop();
+            return true;
+        } else {
+            System.out.println("We don't have the amount in kg you requested");
+            return false;
+        }
     }
 
     public void printUnservedRequests() {
-
+        Queue a = getRequestingFreshList();
+        System.out.println(getRequestingFreshList().toString());
     }
 
     /**
@@ -203,5 +263,9 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public int getIdClient() {
         return idClient;
+    }
+
+    public Queue getRequestingFreshList() {
+        return requestingFreshList;
     }
 }

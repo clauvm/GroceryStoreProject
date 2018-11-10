@@ -11,6 +11,10 @@ public class GenericProduct extends Product {
         return count;
     }
 
+    public float getPrice() { //todo see if this convenient
+        return super.getPrice();
+    }
+
     public void setCount(int count) {
         this.count = count;
     }

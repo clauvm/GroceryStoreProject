@@ -17,6 +17,11 @@ public class Basket {
         listProducts.addLast(newProduct);
     }
 
+    public void addFreshProduct(FreshProduct product, float amount) {
+        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount);
+        listProducts.addLast(newProduct);
+    }
+
     /**
      * Remove products to the basket using index
      *
