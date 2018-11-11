@@ -30,7 +30,7 @@ public class FreshProductRequested implements Comparable {
     public String toString() {
         String result = "Client : " + this.getCustomerId() + "\n";
         result += "Barcode Product : " + this.getBarcodeId() + "\n";
-        result += "Amount in kg requested : " + String.valueOf(this.getAmount()) + "\n";
+        result += "Amount in kg requested : " + String.valueOf(this.getAmount()) + "\n\n";
         return result;
     }
 

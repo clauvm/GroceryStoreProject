@@ -114,8 +114,6 @@ public class GroceryStore implements GroceryStoreInterface {
     }
     /**
      * Add products to grocery store
-     *
-     * @throws IOException
      */
     public void addProduct(String name, float price, int barcodeId, int count) {
         GenericProduct newGenericProduct = new GenericProduct(name, price, barcodeId, count);
@@ -161,20 +159,26 @@ public class GroceryStore implements GroceryStoreInterface {
         if (clientIndex >= 0) {
             Client client = (Client) this.clientList.get(clientIndex);
             int productClientIndex = compareBarcodeId(barcodeId, client.getBasket().getListProducts());
-            int productStoreIndex = compareBarcodeId(barcodeId, this.productList);
             if (productClientIndex >= 0) {
-                GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(productClientIndex);
-                GenericProduct productGlobal = (GenericProduct) this.productList.get(productStoreIndex);
-                int productQuantity = product.getCount();
-                if (productQuantity > count) {
-                    product.setCount(productQuantity - count);
-                    productGlobal.setCount(productGlobal.getCount() + count);
-                } else if (productQuantity == count) {
-                    client.getBasket().getListProducts().removeByIndex(productClientIndex);
-                    productGlobal.setCount(productGlobal.getCount() + count);
+                int productStoreIndex = compareBarcodeId(barcodeId, this.productList);
+                if (productStoreIndex >= 0) {
+                    GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(productClientIndex);
+                    GenericProduct productGlobal = (GenericProduct) this.productList.get(productStoreIndex);
+                    int productQuantity = product.getCount();
+                    if (productQuantity > count) {
+                        product.setCount(productQuantity - count);
+                        productGlobal.setCount(productGlobal.getCount() + count);
+                    } else if (productQuantity == count) {
+                        client.getBasket().getListProducts().removeByIndex(productClientIndex);
+                        productGlobal.setCount(productGlobal.getCount() + count);
+                    } else {
+                        System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
+                    }
                 } else {
-                    System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
+                    System.out.println("The barcode corresponds to a fresh product, this can't be remove from the basket");
                 }
+            } else {
+                System.out.println("The product is not part of the client's basket");
             }
         }
 
@@ -230,12 +234,12 @@ public class GroceryStore implements GroceryStoreInterface {
             return true;
         } else {
             System.out.println("We don't have the amount in kg you requested");
+            this.requestingFreshList.pop();
             return false;
         }
     }
 
     public void printUnservedRequests() {
-        Queue a = getRequestingFreshList();
         System.out.println(getRequestingFreshList().toString());
     }
 
@@ -255,14 +259,6 @@ public class GroceryStore implements GroceryStoreInterface {
      */
     public LinkedList getFreshProductList() {
         return freshProductList;
-    }
-
-    public LinkedList getClientList() {
-        return clientList;
-    }
-
-    public int getIdClient() {
-        return idClient;
     }
 
     public Queue getRequestingFreshList() {

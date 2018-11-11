@@ -215,11 +215,16 @@ public class LinkedList {
     public void removeLast() {
         ListElement d = head;
         int n = this.size();
-        while (n > 2) {
-            d = d.rest();
-            n--;
+        if (n > 1) {
+            while (n > 2) {
+                d = d.rest();
+                n--;
+            }
+            d.setRest(null);
+        } else {
+            head = null;
         }
-        d.setRest(null);
+
     }
 
     /**

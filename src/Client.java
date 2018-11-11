@@ -20,10 +20,6 @@ public class Client implements Comparable {
         return basket;
     }
 
-    public void setBasket(Basket basket) {
-        this.basket = basket;
-    }
-
     public int compareTo(Object clientToCompare) {
         Client currentClient = (Client) clientToCompare;
         return ((Comparable) id).compareTo(currentClient.id);
