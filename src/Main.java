@@ -63,7 +63,7 @@ public class Main {
                         groceryStore.printStoreProducts();
                         break;
                     case 6:
-                        groceryStore.printStoreFreshProducts();
+//                        groceryStore.printStoreFreshProducts();
                         break;
                     case 7:
                         groceryStore.informationToAddOrRemoveProducts(0);
