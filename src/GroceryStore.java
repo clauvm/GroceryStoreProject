@@ -8,7 +8,10 @@ public class GroceryStore implements GroceryStoreInterface {
 
     private LinkedList productList;
     private LinkedList freshProductList;
+    private Dictionary storeProductsList;
     private LinkedList clientList;
+    private Dictionary clientsList;
+    private LinkedList departmentList;
     private int idClient;
     private Queue requestingFreshList;
 
@@ -16,8 +19,18 @@ public class GroceryStore implements GroceryStoreInterface {
         this.productList = new LinkedList();
         this.freshProductList = new LinkedList();
         this.clientList = new LinkedList();
+        this.clientsList = new Dictionary();
         this.idClient = 0;
         this.requestingFreshList = new Queue();
+        this.departmentList = new LinkedList();
+        this.storeProductsList = new Dictionary();
+    }
+
+    public void fillInformationNewDepartment() throws IOException {
+        System.out.println("DepartmentName");
+        BufferedReader bufferedReaderName = new BufferedReader(new InputStreamReader(System.in));
+        String name = bufferedReaderName.readLine();
+        addDepartment(name);
     }
 
     public void fillInformationNewProduct(int type) throws IOException {
@@ -37,7 +50,12 @@ public class GroceryStore implements GroceryStoreInterface {
             System.out.println("Product quantity?");
             BufferedReader bufferedReaderQuantity = new BufferedReader(new InputStreamReader(System.in));
             int quantity = Integer.parseInt(bufferedReaderQuantity.readLine());
-            addProduct(name, price, barcode, quantity);
+
+            System.out.println("Product department?");
+            BufferedReader bufferedReaderDepartment = new BufferedReader(new InputStreamReader(System.in));
+            String department = bufferedReaderDepartment.readLine();
+
+            addProduct(department, name, price, barcode, quantity);
         } else {
             System.out.println("Product amount in kg?");
             BufferedReader bufferedReaderAmount = new BufferedReader(new InputStreamReader(System.in));
@@ -89,8 +107,21 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public int compareBarcodeId(int barcode, LinkedList list) {
-        Product temp = new Product("test", 0, barcode);
-        return list.contains(temp);
+//        Product temp = new Product("test", 0, barcode);
+//        return list.contains(temp);
+        return 0;
+    }
+
+    public boolean validateInformation(int barcodeId, int customerId, Dictionary list) {
+        if (list.find(barcodeId) == null) {
+            System.out.println("The product isn't part of the list, please enter the barcode again ");
+            return false;
+        }
+        if (this.clientsList.find(customerId) == null) {
+            System.out.println("Incorrect customer id, please enter the id again");
+            return false;
+        }
+        return true;
     }
 
     public void printStoreProducts() {
@@ -108,101 +139,77 @@ public class GroceryStore implements GroceryStoreInterface {
         if (type == 0) {
             printBasket(clientId);
         } else {
-            System.out.println("the total price of the basket is: " + computeBasketPrice(clientId));
+            System.out.println("the total price of the basket is: " + computeBasketPrice(clientId) + "€");
         }
 
     }
+
     /**
      * Add products to grocery store
      */
-    public void addProduct(String name, float price, int barcodeId, int count) {
-        GenericProduct newGenericProduct = new GenericProduct(name, price, barcodeId, count);
-        this.productList.addFirst(newGenericProduct);
+    public void addProduct(String department, String name, float price, int barcodeId, int count) {
+        GenericProduct newGenericProduct = new GenericProduct(department, name, price, barcodeId, count, false);
+        this.storeProductsList.add(barcodeId, newGenericProduct);
     }
 
     public void addFreshProduct(String name, float pricePerKg, int barcodeId, float amountInKg) {
-        FreshProduct newFreshProduct = new FreshProduct(name, pricePerKg, barcodeId, amountInKg);
-        this.freshProductList.addFirst(newFreshProduct);
+        FreshProduct newFreshProduct = new FreshProduct(name, pricePerKg, barcodeId, amountInKg, true);
+        this.storeProductsList.add(barcodeId, newFreshProduct);
     }
 
     public int addClient(String name) {
         idClient++;
         Client newClient = new Client(name, idClient);
-        this.clientList.addFirst(newClient);
+        this.clientsList.add(idClient, newClient);
         return idClient;
     }
 
     public void addToBasket(int barcodeId, int count, int customerId) {
-        int clientIndex = compareClientId(customerId);
-        int productIndex = compareBarcodeId(barcodeId, this.productList);
-        if (productIndex >= 0) {
-            GenericProduct product = (GenericProduct) this.productList.get(productIndex);
-            if (product.getCount() >= count) {
-                if (clientIndex >= 0) {
-                    Client client = (Client) this.clientList.get(clientIndex);
-                    client.getBasket().addItem(product, count);
-                    product.setCount(product.getCount() - count);
-                } else {
-                    System.out.println("Costumer id not valid");
-                }
-            } else {
-                System.out.println("We don't have as many product packets as the customer requires");
-            }
-
-        } else {
-            System.out.println("Barcode not valid");
+        Product product = (Product) this.storeProductsList.find(barcodeId);
+        if (validateInformation(barcodeId, customerId, this.storeProductsList) && !product.getIsFreshProduct() && product.getAmount() >= count) {
+            Client client = (Client) this.clientsList.find(customerId);
+            client.getBasket().addItem(product, count);
+            product.setAmount(product.getAmount() - count);
         }
     }
 
     public void removeFromBasket(int barcodeId, int count, int customerId) {
-        int clientIndex = compareClientId(customerId);
-        if (clientIndex >= 0) {
-            Client client = (Client) this.clientList.get(clientIndex);
-            int productClientIndex = compareBarcodeId(barcodeId, client.getBasket().getListProducts());
-            if (productClientIndex >= 0) {
-                int productStoreIndex = compareBarcodeId(barcodeId, this.productList);
-                if (productStoreIndex >= 0) {
-                    GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(productClientIndex);
-                    GenericProduct productGlobal = (GenericProduct) this.productList.get(productStoreIndex);
-                    int productQuantity = product.getCount();
-                    if (productQuantity > count) {
-                        product.setCount(productQuantity - count);
-                        productGlobal.setCount(productGlobal.getCount() + count);
-                    } else if (productQuantity == count) {
-                        client.getBasket().getListProducts().removeByIndex(productClientIndex);
-                        productGlobal.setCount(productGlobal.getCount() + count);
-                    } else {
-                        System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
-                    }
-                } else {
-                    System.out.println("The barcode corresponds to a fresh product, this can't be remove from the basket");
-                }
+        Client client = (Client) this.clientsList.find(customerId);
+        Product product = (Product) client.getBasket().getListProducts().find(barcodeId);
+        if (validateInformation(barcodeId, customerId, client.getBasket().getListProducts()) && !product.getIsFreshProduct()) {
+            Product productInStore = (Product) this.storeProductsList.find(barcodeId);
+            int productQuantity = (int) product.getAmount();
+            if (productQuantity > count) {
+                product.setAmount(productQuantity - count);
+                productInStore.setAmount(productInStore.getAmount() + count);
+            } else if (productQuantity == count) {
+                client.getBasket().getListProducts().remove(barcodeId);
+                productInStore.setAmount(productInStore.getAmount() + count);
             } else {
-                System.out.println("The product is not part of the client's basket");
+                System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
             }
         }
-
     }
 
     public void printBasket(int customerId) {
-        int clientIndex = compareClientId(customerId);
-        Client client = (Client) this.clientList.get(clientIndex);
+        Client client = (Client) this.clientsList.find(customerId);
         System.out.println(client.getBasket().getListProducts().toString());
     }
 
     public float computeBasketPrice(int customerId) {
-        int clientIndex = compareClientId(customerId);
-        if (clientIndex >= 0) {
-            Client client = (Client) this.clientList.get(clientIndex);
+        Client client = (Client) this.clientsList.find(customerId);
+        if (client != null) {
             float total = 0;
             for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
-                if (client.getBasket().getListProducts().get(i) instanceof GenericProduct) {
-                    GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(i);
-                    total += product.getPrice() * product.getCount();
-                } else if (client.getBasket().getListProducts().get(i) instanceof FreshProduct) {
-                    FreshProduct product = (FreshProduct) client.getBasket().getListProducts().get(i);
-                    total += product.getPrice() * product.getAmountInKg();
-                }
+//                if (client.getBasket().getListProducts().get(i) instanceof GenericProduct) {
+//                    GenericProduct product = (GenericProduct) client.getBasket().getListProducts().get(i);
+//                    total += product.getPrice() * product.getCount();
+//                } else if (client.getBasket().getListProducts().get(i) instanceof FreshProduct) {
+//                    FreshProduct product = (FreshProduct) client.getBasket().getListProducts().get(i);
+//                    total += product.getPrice() * product.getAmountInKg();
+//                }
+                Product product = (Product) client.getBasket().getListProducts().get(i);
+                total += product.getPrice() * product.getAmount();
             }
             return total;
         }
@@ -210,13 +217,12 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void requestFreshProduct(int barcodeId, float amount, int customerId) {
-        int clientIndex = compareClientId(customerId);
-        if (clientIndex >= 0) {
-            int productStoreIndex = compareBarcodeId(barcodeId, this.freshProductList);
-            if (productStoreIndex >= 0) {
-                FreshProductRequested request = new FreshProductRequested(customerId, barcodeId, amount);
-                this.requestingFreshList.push(request);
-            }
+        Product product = (Product) this.storeProductsList.find(barcodeId);
+        if (validateInformation(barcodeId, customerId, this.storeProductsList) && product.getIsFreshProduct()) {
+            FreshProductRequested request = new FreshProductRequested(customerId, barcodeId, amount);
+            this.requestingFreshList.push(request);
+        } else {
+            System.out.println("Incorrect barcode, please enter again");
         }
     }
 
@@ -243,13 +249,22 @@ public class GroceryStore implements GroceryStoreInterface {
         System.out.println(getRequestingFreshList().toString());
     }
 
+    public void addDepartment(String departmentName) {
+        Department newDepartment = new Department(departmentName);
+        if (this.departmentList == null || this.departmentList.contains(newDepartment) != 0) {
+            this.departmentList.addFirst(newDepartment);
+        } else {
+            System.out.println("Name: " + departmentName + " is already used, please enter a new name");
+        }
+    }
+
     /**
      * Get list of products in the store
      *
      * @return
      */
-    public LinkedList getProductList() {
-        return productList;
+    public Dictionary getProductList() {
+        return storeProductsList;
     }
 
     /**

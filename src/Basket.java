@@ -1,10 +1,10 @@
 /*Claudia Vaquera*/
 public class Basket {
 
-    private LinkedList listProducts;
+    private Dictionary listProducts;
 
     public Basket() {
-        this.listProducts = new LinkedList();
+        this.listProducts = new Dictionary();
     }
 
     /**
@@ -12,23 +12,23 @@ public class Basket {
      *
      * @param item
      */
-    public void addItem(GenericProduct item, int count) {
-        GenericProduct newProduct = new GenericProduct(item.getName(), item.getPrice(), item.getBarcode(), count);
-        listProducts.addLast(newProduct);
+    public void addItem(Product item, int count) {
+        GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), count, item.getIsFreshProduct());
+        listProducts.add(item.getBarcode(), newProduct);
     }
 
-    public void addFreshProduct(FreshProduct product, float amount) {
-        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount);
-        listProducts.addLast(newProduct);
+    public void addFreshProduct(Product product, float amount) {
+        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount, product.getIsFreshProduct());
+        listProducts.add(product.getBarcode(), newProduct);
     }
 
     /**
      * Remove products to the basket using index
      *
-     * @param index
+     * @param barcodeId
      */
-    public void removeItem(int index) {
-        listProducts.removeByIndex(index);
+    public void removeItem(int barcodeId) {
+        listProducts.remove(barcodeId);
     }
 
     /**
@@ -36,7 +36,7 @@ public class Basket {
      *
      * @return
      */
-    public LinkedList getListProducts() {
+    public Dictionary getListProducts() {
         return listProducts;
     }
 
