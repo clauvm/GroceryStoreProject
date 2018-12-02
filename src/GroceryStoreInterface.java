@@ -105,13 +105,13 @@ public interface GroceryStoreInterface {
 	 * @param customerId - the client id of the client that checkouts the items from the
 	 *     basket and finalizes the purchase 
 	 */
-//	void checkout(int customerId);
+    void checkout(int customerId);
 
 	/**
 	 * Prints a summary of previous purchases
 	 *
 	 * @param customerId - the client id for which the shopping history will be printed
 	 */
-//	void printShoppingHistory(int customerId);
+    void printShoppingHistory(int customerId);
 	
 }

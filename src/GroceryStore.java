@@ -96,6 +96,17 @@ public class GroceryStore implements GroceryStoreInterface {
         requestFreshProduct(barcodeId, amount, clientId);
     }
 
+    public void fillInformationCheckoutAndHistory(int type) throws IOException {
+        System.out.println("Enter your client id");
+        BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
+        int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
+        if (type == 0) {
+            checkout(clientId);
+        } else {
+            printShoppingHistory(clientId);
+        }
+    }
+
     public boolean validateInformation(int barcodeId, int customerId, Dictionary list) {
         if (list.find(barcodeId) == null) {
             System.out.println("The product isn't part of the list, please enter the barcode again ");
@@ -122,6 +133,19 @@ public class GroceryStore implements GroceryStoreInterface {
             System.out.println("the total price of the basket is: " + round(computeBasketPrice(clientId), 2) + "€");
         }
 
+    }
+
+    public void printBill(int customerId) {
+        Client client = (Client) this.clientsList.find(customerId);
+        if (client != null) {
+            String bill = "";
+            for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
+                Product product = (Product) client.getBasket().getListProducts().get(i);
+                bill += product.getAmount() + " " + product.getName() + " --> " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
+            }
+            System.out.println(bill);
+            System.out.println("Total: " + round(computeBasketPrice(customerId), 2) + "€");
+        }
     }
 
     /**
@@ -163,7 +187,7 @@ public class GroceryStore implements GroceryStoreInterface {
                 product.setAmount(productQuantity - count);
                 productInStore.setAmount(productInStore.getAmount() + count);
             } else if (productQuantity == count) {
-                client.getBasket().getListProducts().remove(barcodeId);
+                client.getBasket().removeItem(barcodeId);
                 productInStore.setAmount(productInStore.getAmount() + count);
             } else {
                 System.out.println("You only have " + productQuantity + " packages of this products and you want to remove " + count + " please, enter a valid quantity");
@@ -233,6 +257,26 @@ public class GroceryStore implements GroceryStoreInterface {
             System.out.println("Name: " + departmentName + " is already used, please enter a new name");
         }
     }
+
+    public void checkout(int customerId) {
+        printBill(customerId);
+        Client client = (Client) this.clientsList.find(customerId);
+        for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
+            Product product = (Product) client.getBasket().getListProducts().get(i);
+            if (product.getIsFreshProduct()) {
+                client.getHistory().addFreshProduct(product);
+            } else {
+                client.getHistory().addItem(product);
+            }
+        }
+        client.deleteBasket();
+    }
+
+    public void printShoppingHistory(int customerId) {
+
+    }
+
+
 
     /**
      * Get list of products in the store

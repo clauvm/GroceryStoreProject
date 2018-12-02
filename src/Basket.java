@@ -10,7 +10,8 @@ public class Basket {
     /**
      * Add products to the basket
      *
-     * @param item
+     * @param item Product
+     * @param count int
      */
     public void addItem(Product item, int count) {
         GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), count, item.getIsFreshProduct());

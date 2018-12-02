@@ -25,7 +25,7 @@ public class GenericProduct extends Product {
     public String toString() {
         String result = "Product Department: " + this.getDepartment() + "\n";
         result += "Product Name: " + super.getName() + "\n";
-        result += "Product Price: " + String.valueOf(super.getPrice()) + "\n";
+        result += "Product Price: " + String.valueOf(super.getPrice()) + "€" + "\n";
         result += "Product Barcode: " + super.getBarcode() + "\n";
         result += "Product Count: " + this.getCount() + "\n";
         result += "Fresh Product: " + this.getIsFreshProduct() + "\n\n";

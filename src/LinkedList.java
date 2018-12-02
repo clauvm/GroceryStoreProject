@@ -248,7 +248,5 @@ public class LinkedList {
             ListElement aux = d.rest();
             d.el2 = aux.rest();
         }
-
     }
-
 }

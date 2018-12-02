@@ -35,15 +35,16 @@ public class Main {
             System.out.println("3.- Add Product");
             System.out.println("4.- Add Fresh Product");
             System.out.println("5.- Print Products in the store");
-            System.out.println("6.- Print Fresh Products in the store");
-            System.out.println("7.- Add Product to Basket");
-            System.out.println("8.- Remove product from basket");
-            System.out.println("9.- Print Products in the basket");
-            System.out.println("10.- Total price of the basket");
-            System.out.println("11.- Request Fresh Product");
-            System.out.println("12.- Serve Next Request");
-            System.out.println("13.- Print Unserved Request");
-            System.out.println("14.- Exit");
+            System.out.println("6.- Add Product to Basket");
+            System.out.println("7.- Remove product from basket");
+            System.out.println("8.- Print Products in the basket");
+            System.out.println("9.- Total price of the basket");
+            System.out.println("10.- Request Fresh Product");
+            System.out.println("11.- Serve Next Request");
+            System.out.println("12.- Print Unserved Request");
+            System.out.println("13.- Checkout");
+            System.out.println("14.- Print Shopping History");
+            System.out.println("15.- Exit");
             try {
                 option = Integer.parseInt(bufferedReader.readLine());
                 switch (option) {
@@ -63,33 +64,36 @@ public class Main {
                         groceryStore.printStoreProducts();
                         break;
                     case 6:
-//                        groceryStore.printStoreFreshProducts();
-                        break;
-                    case 7:
                         groceryStore.informationToAddOrRemoveProducts(0);
                         break;
-                    case 8:
+                    case 7:
                         groceryStore.informationToAddOrRemoveProducts(1);
                         break;
-                    case 9:
+                    case 8:
                         groceryStore.printOrComputeForClient(0);
                         break;
-                    case 10:
+                    case 9:
                         groceryStore.printOrComputeForClient(1);
                         break;
-                    case 11:
+                    case 10:
                         groceryStore.fillInformationAddFreshProduct();
                         break;
-                    case 12:
+                    case 11:
                         groceryStore.serveNextRequest();
                         break;
-                    case 13:
+                    case 12:
                         groceryStore.printUnservedRequests();
+                        break;
+                    case 13:
+                        groceryStore.fillInformationCheckoutAndHistory(0);
+                        break;
+                    case 14:
+                        groceryStore.fillInformationCheckoutAndHistory(1);
                         break;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error: The value entered is not a valid option");
             }
-        } while (option != 14);
+        } while (option != 15);
     }
 }
