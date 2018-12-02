@@ -130,22 +130,51 @@ public class GroceryStore implements GroceryStoreInterface {
         if (type == 0) {
             printBasket(clientId);
         } else {
-            System.out.println("the total price of the basket is: " + round(computeBasketPrice(clientId), 2) + "€");
+            System.out.println("the total price of the basket is: " + round(computeBasketPrice(clientId), 2) + "€" + "\n");
         }
 
     }
 
     public void printBill(int customerId) {
+        String[] result = traverseList(customerId, true);
+        System.out.println(result[0]);
+        System.out.println("Total: " + result[1] + "€" + "\n\n");
+    }
+
+    public String[] traverseList(int customerId, boolean createList) {
         Client client = (Client) this.clientsList.find(customerId);
+        String[] result = new String[2];
         if (client != null) {
             String bill = "";
+            float total = 0;
+            String count;
             for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
                 Product product = (Product) client.getBasket().getListProducts().get(i);
-                bill += product.getAmount() + " " + product.getName() + " --> " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
+                if (product.getIsFreshProduct()) {
+                    float amount = round((float) product.getAmount(), 2);
+                    count = String.valueOf(amount);
+                } else {
+                    int amount = (int) product.getAmount();
+                    count = String.valueOf(amount);
+                }
+                bill += count + " " + product.getName() + " --> " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
+                total += product.getPrice() * product.getAmount();
+                if (createList) {
+                    if (product.getIsFreshProduct()) {
+                        client.getHistory().addFreshProduct(product);
+                    } else {
+                        client.getHistory().addItem(product);
+                    }
+                }
             }
-            System.out.println(bill);
-            System.out.println("Total: " + round(computeBasketPrice(customerId), 2) + "€");
+            total = round(total, 2);
+            result[0] = bill;
+            result[1] = String.valueOf(total);
+            if (createList) {
+                client.deleteBasket();
+            }
         }
+        return result;
     }
 
     /**
@@ -204,16 +233,8 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public float computeBasketPrice(int customerId) {
-        Client client = (Client) this.clientsList.find(customerId);
-        if (client != null) {
-            float total = 0;
-            for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
-                Product product = (Product) client.getBasket().getListProducts().get(i);
-                total += product.getPrice() * product.getAmount();
-            }
-            return total;
-        }
-        return -1;
+        float total = Float.valueOf(traverseList(customerId, false)[1]);
+        return total;
     }
 
     public void requestFreshProduct(int barcodeId, float amount, int customerId) {
@@ -260,23 +281,12 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public void checkout(int customerId) {
         printBill(customerId);
-        Client client = (Client) this.clientsList.find(customerId);
-        for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
-            Product product = (Product) client.getBasket().getListProducts().get(i);
-            if (product.getIsFreshProduct()) {
-                client.getHistory().addFreshProduct(product);
-            } else {
-                client.getHistory().addItem(product);
-            }
-        }
-        client.deleteBasket();
     }
 
     public void printShoppingHistory(int customerId) {
-
+        Client client = (Client) this.clientsList.find(customerId);
+        System.out.println(client.getHistory().toString());
     }
-
-
 
     /**
      * Get list of products in the store
