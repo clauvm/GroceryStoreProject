@@ -29,10 +29,14 @@ public class Dictionary {
         return null;
     }
 
-    public void remove(Comparable key) {
+    public void removebyIndex(Comparable key) {
         DictionaryPair test = new DictionaryPair(key, "");
         int position = findPosition(test);
         data.removeByIndex(position);
+    }
+
+    public void remove() {
+        data.removeFirst();
     }
 
     public int size() {

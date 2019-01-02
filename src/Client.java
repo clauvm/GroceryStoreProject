@@ -5,12 +5,14 @@ public class Client implements Comparable {
     private Basket basket;
     private int id;
     private HistoryClients history;
+    private ShoppingListClients shoppingList;
 
     public Client(String name, int id) {
         this.name = name;
         this.basket = new Basket();
         this.id = id;
         this.history = new HistoryClients();
+        this.shoppingList = new ShoppingListClients();
     }
 
     /**
@@ -19,17 +21,26 @@ public class Client implements Comparable {
      * @return
      */
     public Basket getBasket() {
-        return basket;
+        return this.basket;
     }
 
     public HistoryClients getHistory() {
-        return history;
+        return this.history;
+    }
+
+    public ShoppingListClients getShoppingList() {
+        return this.shoppingList;
     }
 
     public void deleteBasket() {
-        while (basket.getListProducts().size() > 0) {
-            Product product = (Product) basket.getListProducts().get(0);
-            basket.removeItem(product.getBarcode());
+        while (this.basket.getListProducts().size() > 0) {
+            this.basket.removeFirstItem();
+        }
+    }
+
+    public void clearShoppingList() {
+        while (this.shoppingList.getShoppingList().size() > 0) {
+            this.shoppingList.removeItem();
         }
     }
 

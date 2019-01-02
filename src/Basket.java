@@ -12,17 +12,8 @@ public class Basket {
      *
      * @param newProduct Product
      */
-//    public void addItem(Product item) {
-//        GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), count, item.getIsFreshProduct());
-//        listProducts.add(item.getBarcode(), newProduct);
-//    }
-//
-//    public void addFreshProduct(Product product, float amount) {
-//        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount, product.getIsFreshProduct());
-//        listProducts.add(product.getBarcode(), newProduct);
-//    }
     public void addProduct(Product newProduct) {
-        listProducts.add(newProduct.getBarcode(), newProduct);
+        this.listProducts.add(newProduct.getBarcode(), newProduct);
     }
 
     /**
@@ -31,7 +22,11 @@ public class Basket {
      * @param barcodeId
      */
     public void removeItem(int barcodeId) {
-        listProducts.remove(barcodeId);
+        this.listProducts.removebyIndex(barcodeId);
+    }
+
+    public void removeFirstItem() {
+        this.listProducts.remove();
     }
 
     /**
@@ -40,7 +35,7 @@ public class Basket {
      * @return
      */
     public Dictionary getListProducts() {
-        return listProducts;
+        return this.listProducts;
     }
 
 

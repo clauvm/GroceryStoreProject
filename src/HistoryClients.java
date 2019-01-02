@@ -10,23 +10,18 @@ public class HistoryClients {
     /**
      * Add products to the history
      *
-     * @param item Product
+     * @param product Product
      */
-    public void addItem(Product item) {
-        GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), (int) item.getAmount(), item.getIsFreshProduct());
-        history.addFirst(newProduct);
-    }
 
-    public void addFreshProduct(Product product) {
-        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), (float) product.getAmount(), product.getIsFreshProduct());
-        history.addFirst(newProduct);
+    public void addNewItem(Product product) {
+        this.history.addFirst(product);
     }
 
     public String toString() {
         String values = "";
         String count;
-        for (int i = 0; i < history.size(); i++) {
-            Product product = (Product) history.get(i);
+        for (int i = 0; i < this.history.size(); i++) {
+            Product product = (Product) this.history.get(i);
             if (product.getIsFreshProduct()) {
                 float amount = round((float) product.getAmount(), 2);
                 count = String.valueOf(amount);

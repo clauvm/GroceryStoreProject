@@ -66,45 +66,53 @@ public class GroceryStore implements GroceryStoreInterface {
         System.out.println("Client id: " + addClient(name));
     }
 
-    public void informationToAddOrRemoveProducts(int type) throws IOException {
+    public void fillInformationToAddOrRemoveProducts(int type) throws IOException {
         System.out.println("Enter your client id");
         BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
         int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
         System.out.println("Enter the barcode of the product");
         BufferedReader bufferedReaderProductBarcode = new BufferedReader(new InputStreamReader(System.in));
         int productBarcode = Integer.parseInt(bufferedReaderProductBarcode.readLine());
-        System.out.println("Enter the number of the packages of the product");
-        BufferedReader bufferedReaderQuantityPackages = new BufferedReader(new InputStreamReader(System.in));
-        int quantityPackages = Integer.parseInt(bufferedReaderQuantityPackages.readLine());
+        System.out.println("Enter the number of the packages/amount of the product");
+        BufferedReader bufferedReaderAmount = new BufferedReader(new InputStreamReader(System.in));
+        float amount = Float.parseFloat(bufferedReaderAmount.readLine());
         if (type == 0) {
-            addToBasket(productBarcode, quantityPackages, clientId);
-        } else {
-            removeFromBasket(productBarcode, quantityPackages, clientId);
+            addToBasket(productBarcode, (int) amount, clientId);
+        } else if (type == 1) {
+            removeFromBasket(productBarcode, (int) amount, clientId);
+        } else if (type == 2) {
+            requestFreshProduct(productBarcode, amount, clientId);
+        } else if (type == 3) {
+            addToShoppingList(productBarcode, (int) amount, clientId);
         }
     }
 
-    public void fillInformationAddFreshProduct() throws IOException {
-        System.out.println("Enter your client id");
-        BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
-        int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
-        System.out.println("Enter the barcode of the product");
-        BufferedReader bufferedReaderBarcodeId = new BufferedReader(new InputStreamReader(System.in));
-        int barcodeId = Integer.parseInt(bufferedReaderBarcodeId.readLine());
-        System.out.println("Enter the amount of the product");
-        BufferedReader bufferedReaderAmount = new BufferedReader(new InputStreamReader(System.in));
-        float amount = Float.parseFloat(bufferedReaderAmount.readLine());
-        requestFreshProduct(barcodeId, amount, clientId);
-    }
-
-    public void fillInformationCheckoutAndHistory(int type) throws IOException {
+    public void requestClientId(int type) throws IOException {
         System.out.println("Enter your client id");
         BufferedReader bufferedReaderClientId = new BufferedReader(new InputStreamReader(System.in));
         int clientId = Integer.parseInt(bufferedReaderClientId.readLine());
         if (type == 0) {
             checkout(clientId);
-        } else {
+        } else if (type == 1) {
             printShoppingHistory(clientId);
+        } else if (type == 2) {
+            clearShoppingList(clientId);
+        } else if (type == 3) {
+            printsOptimalPath(clientId);
+        } else {
+            printShoppingList(clientId);
         }
+    }
+
+    public void fillInformationTwoDepartments(int type) throws IOException {
+        System.out.println("Name Department 1");
+        BufferedReader bufferedReaderDepartment1 = new BufferedReader(new InputStreamReader(System.in));
+        String department1 = bufferedReaderDepartment1.readLine();
+        System.out.println("Name Department 2");
+        BufferedReader bufferedReaderDepartment2 = new BufferedReader(new InputStreamReader(System.in));
+        String department2 = bufferedReaderDepartment2.readLine();
+        if (type == 0) connectDepartments(department1, department2);
+        else shortestPath(department1, department2);
     }
 
     public boolean validateInformation(int barcodeId, int customerId, Dictionary list) {
@@ -163,9 +171,23 @@ public class GroceryStore implements GroceryStoreInterface {
             total += product.getPrice() * product.getAmount();
             if (createList) {
                 if (product.getIsFreshProduct()) {
-                    client.getHistory().addFreshProduct(product);
+                    client.getHistory().addNewItem(
+                            new FreshProduct(product.getName(),
+                                    product.getPrice(),
+                                    product.getBarcode(),
+                                    (float) product.getAmount(),
+                                    true)
+                    );
                 } else {
-                    client.getHistory().addItem(product);
+                    client.getHistory().addNewItem(
+                            new GenericProduct(product.getDepartment(),
+                                    product.getName(),
+                                    product.getPrice(),
+                                    product.getBarcode(),
+                                    (int) product.getAmount(),
+                                    false)
+                    );
+                    ;
                 }
             }
         }
@@ -207,7 +229,7 @@ public class GroceryStore implements GroceryStoreInterface {
                     new GenericProduct(product.getDepartment(),
                             product.getName(),
                             product.getPrice(),
-                            product.getBarcode(),
+                            barcodeId,
                             count,
                             false)
             );
@@ -297,9 +319,47 @@ public class GroceryStore implements GroceryStoreInterface {
         printBill(customerId);
     }
 
+    public void connectDepartments(String department1, String department2) {
+
+    }
+
+    public void shortestPath(String department1, String department2) {
+
+    }
+
     public void printShoppingHistory(int customerId) {
         Client client = (Client) this.clientsList.find(customerId);
         System.out.println(client.getHistory().toString());
+    }
+
+    public void addToShoppingList(int barcodeId, int count, int customerId) {
+        if (!validateInformation(barcodeId, customerId, this.storeProductsList)) {
+            return;
+        }
+        Client client = (Client) this.clientsList.find(customerId);
+        Product product = (Product) this.storeProductsList.find(barcodeId);
+        client.getShoppingList().addNewItem(
+                new GenericProduct(product.getDepartment(),
+                        product.getName(),
+                        product.getPrice(),
+                        barcodeId,
+                        count,
+                        false)
+        );
+    }
+
+    public void printShoppingList(int customerId) {
+        Client client = (Client) this.clientsList.find(customerId);
+        System.out.println(client.getShoppingList().toString());
+    }
+
+    public void clearShoppingList(int customerId) {
+        Client client = (Client) this.clientsList.find(customerId);
+        client.clearShoppingList();
+    }
+
+    public void printsOptimalPath(int customerId) {
+
     }
 
     /**
