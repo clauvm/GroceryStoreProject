@@ -10,17 +10,19 @@ public class Basket {
     /**
      * Add products to the basket
      *
-     * @param item Product
-     * @param count int
+     * @param newProduct Product
      */
-    public void addItem(Product item, int count) {
-        GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), count, item.getIsFreshProduct());
-        listProducts.add(item.getBarcode(), newProduct);
-    }
-
-    public void addFreshProduct(Product product, float amount) {
-        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount, product.getIsFreshProduct());
-        listProducts.add(product.getBarcode(), newProduct);
+//    public void addItem(Product item) {
+//        GenericProduct newProduct = new GenericProduct(item.getDepartment(), item.getName(), item.getPrice(), item.getBarcode(), count, item.getIsFreshProduct());
+//        listProducts.add(item.getBarcode(), newProduct);
+//    }
+//
+//    public void addFreshProduct(Product product, float amount) {
+//        FreshProduct newProduct = new FreshProduct(product.getName(), product.getPrice(), product.getBarcode(), amount, product.getIsFreshProduct());
+//        listProducts.add(product.getBarcode(), newProduct);
+//    }
+    public void addProduct(Product newProduct) {
+        listProducts.add(newProduct.getBarcode(), newProduct);
     }
 
     /**

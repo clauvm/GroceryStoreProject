@@ -138,42 +138,44 @@ public class GroceryStore implements GroceryStoreInterface {
     public void printBill(int customerId) {
         String[] result = traverseList(customerId, true);
         System.out.println(result[0]);
-        System.out.println("Total: " + result[1] + "€" + "\n\n");
+        System.out.println("Total to pay: " + result[1] + "€" + "\n\n");
     }
 
     public String[] traverseList(int customerId, boolean createList) {
         Client client = (Client) this.clientsList.find(customerId);
         String[] result = new String[2];
-        if (client != null) {
-            String bill = "";
-            float total = 0;
-            String count;
-            for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
-                Product product = (Product) client.getBasket().getListProducts().get(i);
-                if (product.getIsFreshProduct()) {
-                    float amount = round((float) product.getAmount(), 2);
-                    count = String.valueOf(amount);
-                } else {
-                    int amount = (int) product.getAmount();
-                    count = String.valueOf(amount);
-                }
-                bill += count + " " + product.getName() + " --> " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
-                total += product.getPrice() * product.getAmount();
-                if (createList) {
-                    if (product.getIsFreshProduct()) {
-                        client.getHistory().addFreshProduct(product);
-                    } else {
-                        client.getHistory().addItem(product);
-                    }
-                }
+        if (client == null) {
+            return null;
+        }
+        String bill = "";
+        float total = 0;
+        String count;
+        for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
+            Product product = (Product) client.getBasket().getListProducts().get(i);
+            if (product.getIsFreshProduct()) {
+                float amount = round((float) product.getAmount(), 2);
+                count = String.valueOf(amount);
+            } else {
+                int amount = (int) product.getAmount();
+                count = String.valueOf(amount);
             }
-            total = round(total, 2);
-            result[0] = bill;
-            result[1] = String.valueOf(total);
+            bill += count + " " + product.getName() + " (unit price " + product.getPrice() + " €) --> Total: " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
+            total += product.getPrice() * product.getAmount();
             if (createList) {
-                client.deleteBasket();
+                if (product.getIsFreshProduct()) {
+                    client.getHistory().addFreshProduct(product);
+                } else {
+                    client.getHistory().addItem(product);
+                }
             }
         }
+        total = round(total, 2);
+        result[0] = bill;
+        result[1] = String.valueOf(total);
+        if (createList) {
+            client.deleteBasket();
+        }
+
         return result;
     }
 
@@ -201,7 +203,14 @@ public class GroceryStore implements GroceryStoreInterface {
         Product product = (Product) this.storeProductsList.find(barcodeId);
         if (validateInformation(barcodeId, customerId, this.storeProductsList) && !product.getIsFreshProduct() && product.getAmount() >= count) {
             Client client = (Client) this.clientsList.find(customerId);
-            client.getBasket().addItem(product, count);
+            client.getBasket().addProduct(
+                    new GenericProduct(product.getDepartment(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getBarcode(),
+                            count,
+                            false)
+            );
             product.setAmount(product.getAmount() - count);
         }
     }
@@ -251,10 +260,15 @@ public class GroceryStore implements GroceryStoreInterface {
         FreshProductRequested request = (FreshProductRequested) this.requestingFreshList.top();
         int barcode = request.getBarcodeId();
         Product product = (Product) this.storeProductsList.find(barcode);
-        ;
         if (product.getAmount() >= request.getAmount()) {
             Client client = (Client) this.clientsList.find(request.getCustomerId());
-            client.getBasket().addFreshProduct(product, request.getAmount());
+            client.getBasket().addProduct(
+                    new FreshProduct(product.getName(),
+                            product.getPrice(),
+                            product.getBarcode(),
+                            request.getAmount(),
+                            true)
+            );
             product.setAmount(product.getAmount() - request.getAmount());
             this.requestingFreshList.pop();
             System.out.println("Request successful" + "\n" + request);
