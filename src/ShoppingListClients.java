@@ -17,6 +17,10 @@ public class ShoppingListClients {
         this.shoppingList.remove();
     }
 
+    public int getSize() {
+        return this.shoppingList.size();
+    }
+
     public String toString() {
         String values = "";
         for (int i = 0; i < this.shoppingList.size(); i++) {

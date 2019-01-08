@@ -8,9 +8,50 @@ public class Main {
     public static void main(String[] args) throws IOException {
         GroceryStore groceryStore = new GroceryStore();
 
+        groceryStore.addDepartment("Entry");
+        groceryStore.addDepartment("Exit");
         groceryStore.addDepartment("Dairy Products");
         groceryStore.addDepartment("Fruits");
         groceryStore.addDepartment("Cookies");
+
+        groceryStore.addDepartment("A");
+        groceryStore.addDepartment("B");
+        groceryStore.addDepartment("C");
+        groceryStore.addDepartment("D");
+        groceryStore.addDepartment("E");
+        groceryStore.addDepartment("F");
+        groceryStore.addDepartment("G");
+        groceryStore.addDepartment("H");
+        groceryStore.addDepartment("I");
+        groceryStore.addDepartment("J");
+        groceryStore.addDepartment("K");
+        groceryStore.addDepartment("L");
+        groceryStore.addDepartment("M");
+        groceryStore.addDepartment("N");
+        groceryStore.addDepartment("Z");
+
+        groceryStore.connectDepartments("A", "B");
+        groceryStore.connectDepartments("A", "C");
+        groceryStore.connectDepartments("B", "D");
+        groceryStore.connectDepartments("C", "E");
+        groceryStore.connectDepartments("C", "F");
+        groceryStore.connectDepartments("D", "G");
+        groceryStore.connectDepartments("E", "K");
+        groceryStore.connectDepartments("E", "H");
+        groceryStore.connectDepartments("E", "I");
+        groceryStore.connectDepartments("F", "I");
+        groceryStore.connectDepartments("F", "J");
+        groceryStore.connectDepartments("G", "H");
+        groceryStore.connectDepartments("G", "K");
+        groceryStore.connectDepartments("I", "L");
+        groceryStore.connectDepartments("J", "K");
+        groceryStore.connectDepartments("K", "M");
+        groceryStore.connectDepartments("K", "N");
+        groceryStore.connectDepartments("L", "Z");
+        groceryStore.connectDepartments("M", "Z");
+        groceryStore.connectDepartments("N", "Z");
+        groceryStore.connectDepartments("I", "N");
+
         groceryStore.addClient("Claudia");
         groceryStore.addClient("Hugo");
         groceryStore.addClient("Katty");
@@ -49,8 +90,10 @@ public class Main {
             System.out.println("17.- Print Unserved Request");
             System.out.println("18.- Checkout");
             System.out.println("19.- Print Shopping History");
+            //additional functionality
             System.out.println("20.- Print Shopping List");
-            System.out.println("21.- Exit");
+            System.out.println("21.- Print Departments Connections");
+            System.out.println("22.- Exit");
             try {
                 option = Integer.parseInt(bufferedReader.readLine());
                 switch (option) {
@@ -114,10 +157,13 @@ public class Main {
                     case 20:
                         groceryStore.requestClientId(4);
                         break;
+                    case 21:
+                        groceryStore.printDepartmentsConnections();
+                        break;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error: The value entered is not a valid option");
             }
-        } while (option != 21);
+        } while (option != 22);
     }
 }

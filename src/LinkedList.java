@@ -249,4 +249,8 @@ public class LinkedList {
             d.el2 = aux.rest();
         }
     }
+
+    public boolean isEmpty() {
+        return size() == 0;
+    }
 }

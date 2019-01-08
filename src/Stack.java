@@ -1,7 +1,7 @@
-public class Queue {
+public class Stack {
     private LinkedList data;
 
-    public Queue() {
+    public Stack() {
         data = new LinkedList();
     }
 
@@ -10,13 +10,13 @@ public class Queue {
     }
 
     public Comparable pop() {
-        Comparable lastElement = data.getLast();
-        data.removeLast();
-        return lastElement;
+        Comparable firstObject = data.getFirst();
+        data.removeFirst();
+        return firstObject;
     }
 
     public Comparable top() {
-        return data.getLast();
+        return data.getFirst();
     }
 
     public int size() {
@@ -32,3 +32,4 @@ public class Queue {
         return s;
     }
 }
+

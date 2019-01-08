@@ -9,16 +9,18 @@ public class GroceryStore implements GroceryStoreInterface {
 
     private Dictionary storeProductsList;
     private Dictionary clientsList;
-    private LinkedList departmentList;
+    //    private LinkedList departmentList;
     private int idClient;
     private Queue requestingFreshList;
+    private Graph groceryFloor;
 
     public GroceryStore() {
         this.clientsList = new Dictionary();
         this.idClient = 0;
         this.requestingFreshList = new Queue();
-        this.departmentList = new LinkedList();
+//        this.departmentList = new LinkedList();
         this.storeProductsList = new Dictionary();
+        this.groceryFloor = new Graph();
     }
 
     public void fillInformationNewDepartment() throws IOException {
@@ -111,8 +113,11 @@ public class GroceryStore implements GroceryStoreInterface {
         System.out.println("Name Department 2");
         BufferedReader bufferedReaderDepartment2 = new BufferedReader(new InputStreamReader(System.in));
         String department2 = bufferedReaderDepartment2.readLine();
-        if (type == 0) connectDepartments(department1, department2);
-        else shortestPath(department1, department2);
+        if (type == 0) {
+            connectDepartments(department1, department2);
+        } else {
+            shortestPath(department1, department2);
+        }
     }
 
     public boolean validateInformation(int barcodeId, int customerId, Dictionary list) {
@@ -307,12 +312,13 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void addDepartment(String departmentName) {
-        Department newDepartment = new Department(departmentName);
-        if (this.departmentList == null || this.departmentList.contains(newDepartment) != 0) {
-            this.departmentList.addFirst(newDepartment);
-        } else {
-            System.out.println("Name: " + departmentName + " is already used, please enter a new name");
-        }
+//        Department newDepartment = new Department(departmentName);
+//        if (this.departmentList == null || this.departmentList.contains(newDepartment) != 0) {
+//            this.departmentList.addFirst(newDepartment);
+//        } else {
+//            System.out.println("Name: " + departmentName + " is already used, please enter a new name");
+//        }
+        this.groceryFloor.addNode(departmentName);
     }
 
     public void checkout(int customerId) {
@@ -320,11 +326,23 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void connectDepartments(String department1, String department2) {
+        if (department1 == department2) {
+            System.out.println("It's not possible to connect a department to itself");
+            return;
+        }
+        if (department1.equals("Entry") || department2.equals("Exit")) {
+            this.groceryFloor.addEdge((Comparable) department1, (Comparable) department2, 1);
+        } else if (department2.equals("Entry") || department1.equals("Exit")) {
+            this.groceryFloor.addEdge(department2, department1, 1);
+        } else {
+            this.groceryFloor.addEdge(department1, department2, 1);
+            this.groceryFloor.addEdge(department2, department1, 1);
+        }
 
     }
 
     public void shortestPath(String department1, String department2) {
-
+        System.out.println(this.groceryFloor.findPath2(department1, department2));
     }
 
     public void printShoppingHistory(int customerId) {
@@ -359,7 +377,7 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void printsOptimalPath(int customerId) {
-
+        groupDepartmentsShoppingList(customerId);
     }
 
     /**
@@ -379,5 +397,24 @@ public class GroceryStore implements GroceryStoreInterface {
         BigDecimal bd = new BigDecimal(number);
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.floatValue();
+    }
+
+    public void groupDepartmentsShoppingList(int customerId) {
+        Client client = (Client) this.clientsList.find(customerId);
+        ShoppingListClients clientList = client.getShoppingList();
+        Vector departmentShoppingList = new Vector(20);
+        for (int i = 0; i < clientList.getSize(); i++) {
+            Product product = (Product) clientList.getShoppingList().get(i);
+            if (departmentShoppingList.contains(product.getDepartment()) == null) {
+                departmentShoppingList.addLast(product.getDepartment());
+            }
+        }
+        System.out.println("List departments" + departmentShoppingList);
+    }
+
+    //Extra functions
+
+    public void printDepartmentsConnections() {
+        System.out.println(this.groceryFloor);
     }
 }
