@@ -44,7 +44,7 @@ public class Main {
         groceryStore.connectDepartments("G", "H");
         groceryStore.connectDepartments("G", "K");
         groceryStore.connectDepartments("I", "L");
-        groceryStore.connectDepartments("J", "K");
+//        groceryStore.connectDepartments("J", "K");
         groceryStore.connectDepartments("K", "M");
         groceryStore.connectDepartments("K", "N");
         groceryStore.connectDepartments("L", "Z");

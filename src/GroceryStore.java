@@ -342,7 +342,8 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void shortestPath(String department1, String department2) {
-        System.out.println(this.groceryFloor.findPath2(department1, department2));
+        System.out.println(this.groceryFloor.findPathTwoElements(department1, department2));
+        System.out.println(this.groceryFloor.findPathTwoElements(department1, department2).size());
     }
 
     public void printShoppingHistory(int customerId) {
@@ -377,7 +378,14 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void printsOptimalPath(int customerId) {
-        groupDepartmentsShoppingList(customerId);
+//        this.groceryFloor.findPathMultipleElements(groupDepartmentsShoppingList(customerId));
+        LinkedList test = new LinkedList();
+        test.addFirst('Z');
+        test.addFirst('F');
+        test.addFirst('K');
+        test.addFirst('H');
+        test.addFirst('A');
+        this.groceryFloor.findPathMultipleElements(test);
     }
 
     /**
@@ -399,7 +407,7 @@ public class GroceryStore implements GroceryStoreInterface {
         return bd.floatValue();
     }
 
-    public void groupDepartmentsShoppingList(int customerId) {
+    public Vector groupDepartmentsShoppingList(int customerId) {
         Client client = (Client) this.clientsList.find(customerId);
         ShoppingListClients clientList = client.getShoppingList();
         Vector departmentShoppingList = new Vector(20);
@@ -410,6 +418,7 @@ public class GroceryStore implements GroceryStoreInterface {
             }
         }
         System.out.println("List departments" + departmentShoppingList);
+        return departmentShoppingList;
     }
 
     //Extra functions

@@ -24,5 +24,9 @@ public class Edge implements Comparable {
         return this.toNode;
     }
 
+    public Object getWeight() {
+        return this.weightNode;
+    }
+
 
 }

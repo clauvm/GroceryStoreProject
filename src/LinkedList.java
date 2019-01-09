@@ -106,14 +106,13 @@ public class LinkedList {
      * @return
      */
     public String toString() {
-        String s = "(";
+        String s = "";
         ListElement d = head;
         while (d != null) {
             s += d.first().toString();
-            s += " ";
+            s += ", ";
             d = d.rest();
         }
-        s += ")";
         return s;
     }
 
