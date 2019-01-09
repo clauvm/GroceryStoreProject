@@ -3,7 +3,7 @@ public class Graph {
     private Vector nodes;
 
     public Graph() {
-        nodes = new Vector(20);
+        nodes = new Vector(50);
     }
 
     public void addNode(Comparable label) {
@@ -68,18 +68,15 @@ public class Graph {
             }
 
         }
-        Vector distancePath = new Vector(2);
         Stack path = new Stack();
         Node current = endNode;
         if (success) {
-//            distancePath.addLast((Comparable)distance.find(current.getLabel()));
             Comparable distanceToPath = (Comparable) distance.find(current.getLabel());
             while (current != startNode) {
                 path.push(current.getLabel());
                 current = (Node) parentRelation.find(current);
             }
             path.push(startNode.getLabel());
-//            distancePath.addLast((Comparable)path);
             path.push(distanceToPath);
         }
         return path;
@@ -103,6 +100,16 @@ public class Graph {
                     aux.pop();
                     tempPath = aux.toString();
                     position = i;
+                } else if (distance == minDist) {
+                    Stack tempPath1 = findPathTwoElements(items.get(i).toString(), items.get(items.size() - 1).toString());
+                    Stack tempPath2 = findPathTwoElements(closestItem, items.get(items.size() - 1).toString());
+                    if ((Integer) tempPath1.pop() > (Integer) tempPath2.pop()) {
+                        minDist = distance;
+                        closestItem = items.get(i).toString();
+                        aux.pop();
+                        tempPath = aux.toString();
+                        position = i;
+                    }
                 }
             }
             startPoint = closestItem;

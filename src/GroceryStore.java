@@ -312,12 +312,6 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void addDepartment(String departmentName) {
-//        Department newDepartment = new Department(departmentName);
-//        if (this.departmentList == null || this.departmentList.contains(newDepartment) != 0) {
-//            this.departmentList.addFirst(newDepartment);
-//        } else {
-//            System.out.println("Name: " + departmentName + " is already used, please enter a new name");
-//        }
         this.groceryFloor.addNode(departmentName);
     }
 
@@ -378,14 +372,18 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void printsOptimalPath(int customerId) {
-//        this.groceryFloor.findPathMultipleElements(groupDepartmentsShoppingList(customerId));
-        LinkedList test = new LinkedList();
-        test.addFirst('Z');
-        test.addFirst('F');
-        test.addFirst('K');
-        test.addFirst('H');
-        test.addFirst('A');
-        this.groceryFloor.findPathMultipleElements(test);
+        LinkedList customerShoppingList = groupDepartmentsShoppingList(customerId);
+        customerShoppingList.addFirst("Entry");
+        customerShoppingList.addLast("Exit");
+        this.groceryFloor.findPathMultipleElements(customerShoppingList);
+
+//        LinkedList test = new LinkedList();
+//        test.addFirst('Z');
+//        test.addFirst('F');
+//        test.addFirst('K');
+//        test.addFirst('H');
+//        test.addFirst('A');
+//        this.groceryFloor.findPathMultipleElements(test);
     }
 
     /**
@@ -407,17 +405,17 @@ public class GroceryStore implements GroceryStoreInterface {
         return bd.floatValue();
     }
 
-    public Vector groupDepartmentsShoppingList(int customerId) {
+    public LinkedList groupDepartmentsShoppingList(int customerId) {
         Client client = (Client) this.clientsList.find(customerId);
         ShoppingListClients clientList = client.getShoppingList();
-        Vector departmentShoppingList = new Vector(20);
+        LinkedList departmentShoppingList = new LinkedList();
         for (int i = 0; i < clientList.getSize(); i++) {
             Product product = (Product) clientList.getShoppingList().get(i);
-            if (departmentShoppingList.contains(product.getDepartment()) == null) {
-                departmentShoppingList.addLast(product.getDepartment());
+            if (departmentShoppingList.contains(product.getDepartment()) == -1) {
+                departmentShoppingList.addFirst(product.getDepartment());
             }
         }
-        System.out.println("List departments" + departmentShoppingList);
+        System.out.println("List departments " + departmentShoppingList);
         return departmentShoppingList;
     }
 
