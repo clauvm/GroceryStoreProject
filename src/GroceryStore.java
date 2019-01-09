@@ -9,7 +9,6 @@ public class GroceryStore implements GroceryStoreInterface {
 
     private Dictionary storeProductsList;
     private Dictionary clientsList;
-    //    private LinkedList departmentList;
     private int idClient;
     private Queue requestingFreshList;
     private Graph groceryFloor;
@@ -18,13 +17,12 @@ public class GroceryStore implements GroceryStoreInterface {
         this.clientsList = new Dictionary();
         this.idClient = 0;
         this.requestingFreshList = new Queue();
-//        this.departmentList = new LinkedList();
         this.storeProductsList = new Dictionary();
         this.groceryFloor = new Graph();
     }
 
     public void fillInformationNewDepartment() throws IOException {
-        System.out.println("DepartmentName");
+        System.out.println("Department name?");
         BufferedReader bufferedReaderName = new BufferedReader(new InputStreamReader(System.in));
         String name = bufferedReaderName.readLine();
         addDepartment(name);
@@ -165,35 +163,12 @@ public class GroceryStore implements GroceryStoreInterface {
         String count;
         for (int i = 0; i < client.getBasket().getListProducts().size(); i++) {
             Product product = (Product) client.getBasket().getListProducts().get(i);
-            if (product.getIsFreshProduct()) {
-                float amount = round((float) product.getAmount(), 2);
-                count = String.valueOf(amount);
-            } else {
-                int amount = (int) product.getAmount();
-                count = String.valueOf(amount);
-            }
+            float amount = round((float) product.getAmount(), 2);
+            count = String.valueOf(amount);
             bill += count + " " + product.getName() + " (unit price " + product.getPrice() + " €) --> Total: " + round(((float) (product.getPrice() * product.getAmount())), 2) + " €" + "\n";
             total += product.getPrice() * product.getAmount();
             if (createList) {
-                if (product.getIsFreshProduct()) {
-                    client.getHistory().addNewItem(
-                            new FreshProduct(product.getName(),
-                                    product.getPrice(),
-                                    product.getBarcode(),
-                                    (float) product.getAmount(),
-                                    true)
-                    );
-                } else {
-                    client.getHistory().addNewItem(
-                            new GenericProduct(product.getDepartment(),
-                                    product.getName(),
-                                    product.getPrice(),
-                                    product.getBarcode(),
-                                    (int) product.getAmount(),
-                                    false)
-                    );
-                    ;
-                }
+                createHistoryClient(product, client);
             }
         }
         total = round(total, 2);
@@ -204,6 +179,27 @@ public class GroceryStore implements GroceryStoreInterface {
         }
 
         return result;
+    }
+
+    public void createHistoryClient(Product product, Client client) {
+        if (product.getIsFreshProduct()) {
+            client.getHistory().addNewItem(
+                    new FreshProduct(product.getName(),
+                            product.getPrice(),
+                            product.getBarcode(),
+                            (float) product.getAmount(),
+                            true)
+            );
+        } else {
+            client.getHistory().addNewItem(
+                    new GenericProduct(product.getDepartment(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getBarcode(),
+                            (int) product.getAmount(),
+                            false)
+            );
+        }
     }
 
     /**
@@ -239,6 +235,8 @@ public class GroceryStore implements GroceryStoreInterface {
                             false)
             );
             product.setAmount(product.getAmount() - count);
+        } else {
+            System.out.println("The product couldn't be added to the basket, please check the information");
         }
     }
 
@@ -320,13 +318,18 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void connectDepartments(String department1, String department2) {
-        if (department1 == department2) {
+        if (department1.equals(department2)) {
             System.out.println("It's not possible to connect a department to itself");
             return;
         }
-        if (department1.equals("Entry") || department2.equals("Exit")) {
+//        if (department1.equals("Entry") || department2.equals("Exit")) {
+//            this.groceryFloor.addEdge((Comparable) department1, (Comparable) department2, 1);
+//        } else if (department2.equals("Entry") || department1.equals("Exit")) {
+//            this.groceryFloor.addEdge(department2, department1, 1);
+//        }
+        if (department2.equals("Exit")) {
             this.groceryFloor.addEdge((Comparable) department1, (Comparable) department2, 1);
-        } else if (department2.equals("Entry") || department1.equals("Exit")) {
+        } else if (department1.equals("Exit")) {
             this.groceryFloor.addEdge(department2, department1, 1);
         } else {
             this.groceryFloor.addEdge(department1, department2, 1);
@@ -336,8 +339,9 @@ public class GroceryStore implements GroceryStoreInterface {
     }
 
     public void shortestPath(String department1, String department2) {
-        System.out.println(this.groceryFloor.findPathTwoElements(department1, department2));
-        System.out.println(this.groceryFloor.findPathTwoElements(department1, department2).size());
+        Stack path = this.groceryFloor.findPathTwoElements(department1, department2);
+        System.out.println("Distance: " + path.pop() + "\n");
+        System.out.println("Path: " + path);
     }
 
     public void printShoppingHistory(int customerId) {
@@ -361,11 +365,6 @@ public class GroceryStore implements GroceryStoreInterface {
         );
     }
 
-    public void printShoppingList(int customerId) {
-        Client client = (Client) this.clientsList.find(customerId);
-        System.out.println(client.getShoppingList().toString());
-    }
-
     public void clearShoppingList(int customerId) {
         Client client = (Client) this.clientsList.find(customerId);
         client.clearShoppingList();
@@ -373,17 +372,14 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public void printsOptimalPath(int customerId) {
         LinkedList customerShoppingList = groupDepartmentsShoppingList(customerId);
-        customerShoppingList.addFirst("Entry");
-        customerShoppingList.addLast("Exit");
-        this.groceryFloor.findPathMultipleElements(customerShoppingList);
-
-//        LinkedList test = new LinkedList();
-//        test.addFirst('Z');
-//        test.addFirst('F');
-//        test.addFirst('K');
-//        test.addFirst('H');
-//        test.addFirst('A');
-//        this.groceryFloor.findPathMultipleElements(test);
+        if (customerShoppingList.size() > 0) {
+            customerShoppingList.addFirst("Entry");
+            customerShoppingList.addLast("Exit");
+            System.out.printf("\nPlease follow  this route: \n");
+            System.out.println(this.groceryFloor.findPathMultipleElements(customerShoppingList));
+        } else {
+            System.out.println("The shopping list is empty, please add some products");
+        }
     }
 
     /**
@@ -423,5 +419,10 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public void printDepartmentsConnections() {
         System.out.println(this.groceryFloor);
+    }
+
+    public void printShoppingList(int customerId) {
+        Client client = (Client) this.clientsList.find(customerId);
+        System.out.println(client.getShoppingList().toString());
     }
 }

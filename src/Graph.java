@@ -49,11 +49,11 @@ public class Graph {
         toDoList.push(startNode);
         startNode.setVisited(true);
         distance.add(nodeLabel1, 0);
-        boolean success = false;
+        boolean nodeFound = false;
         while (!toDoList.empty()) {
             Node current = (Node) toDoList.pop();
             if (current == endNode) {
-                success = true;
+                nodeFound = true;
                 break;
             }
             for (int i = 0; i < current.getEdges().size(); i++) {
@@ -66,11 +66,10 @@ public class Graph {
                     distance.add(n.getLabel(), (Integer) e.getWeight() + (Integer) distance.find(current.getLabel()));
                 }
             }
-
         }
         Stack path = new Stack();
         Node current = endNode;
-        if (success) {
+        if (nodeFound) {
             Comparable distanceToPath = (Comparable) distance.find(current.getLabel());
             while (current != startNode) {
                 path.push(current.getLabel());
@@ -82,41 +81,44 @@ public class Graph {
         return path;
     }
 
-    public void findPathMultipleElements(LinkedList items) {
+    public String findPathMultipleElements(LinkedList items) {
         String startPoint = items.get(0).toString();
         String order = startPoint + ", ";
         Stack aux;
         String tempPath = "";
         int position = 0;
-        while (items.size() > 1) {
+        String closestItem = "";
+        while (items.size() > 2) {
             int minDist = 1000;
-            String closestItem = "";
-            for (int i = 1; i < items.size(); i++) {
+            closestItem = "";
+            for (int i = 1; i < items.size() - 1; i++) {
                 aux = findPathTwoElements(startPoint, items.get(i).toString());
                 int distance = (Integer) aux.pop();
-                if (distance < minDist) {
+                int tempDistPath1 = 0;
+                int tempDistPath2 = 0;
+                if (distance == minDist) {
+                    Stack tempPath1 = findPathTwoElements(items.get(i).toString(), items.get(items.size() - 1).toString());
+                    Stack tempPath2 = findPathTwoElements(closestItem, items.get(items.size() - 1).toString());
+                    tempDistPath1 = (Integer) tempPath1.pop();
+                    tempDistPath2 = (Integer) tempPath2.pop();
+                }
+                if (distance < minDist || tempDistPath1 > tempDistPath2) {
                     minDist = distance;
                     closestItem = items.get(i).toString();
                     aux.pop();
                     tempPath = aux.toString();
                     position = i;
-                } else if (distance == minDist) {
-                    Stack tempPath1 = findPathTwoElements(items.get(i).toString(), items.get(items.size() - 1).toString());
-                    Stack tempPath2 = findPathTwoElements(closestItem, items.get(items.size() - 1).toString());
-                    if ((Integer) tempPath1.pop() > (Integer) tempPath2.pop()) {
-                        minDist = distance;
-                        closestItem = items.get(i).toString();
-                        aux.pop();
-                        tempPath = aux.toString();
-                        position = i;
-                    }
                 }
             }
             startPoint = closestItem;
             order += tempPath;
             items.removeByIndex(position);
         }
-        System.out.println(order);
+        aux = findPathTwoElements(closestItem, items.get(items.size() - 1).toString());
+        aux.pop();
+        aux.pop();
+        order += aux.toString();
+        return order;
     }
 
     public String toString() {
