@@ -1,5 +1,3 @@
-/*Claudia Vaquera*/
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -226,14 +224,19 @@ public class GroceryStore implements GroceryStoreInterface {
         Product product = (Product) this.storeProductsList.find(barcodeId);
         if (validateInformation(barcodeId, customerId, this.storeProductsList) && !product.getIsFreshProduct() && product.getAmount() >= count) {
             Client client = (Client) this.clientsList.find(customerId);
-            client.getBasket().addProduct(
-                    new GenericProduct(product.getDepartment(),
-                            product.getName(),
-                            product.getPrice(),
-                            barcodeId,
-                            count,
-                            false)
-            );
+            Product productInBasket = (Product) client.getBasket().getListProducts().find(barcodeId);
+            if (productInBasket != null) {
+                productInBasket.setAmount(productInBasket.getAmount() + count);
+            } else {
+                client.getBasket().addProduct(
+                        new GenericProduct(product.getDepartment(),
+                                product.getName(),
+                                product.getPrice(),
+                                barcodeId,
+                                count,
+                                false)
+                );
+            }
             product.setAmount(product.getAmount() - count);
         } else {
             System.out.println("The product couldn't be added to the basket, please check the information");
@@ -283,17 +286,23 @@ public class GroceryStore implements GroceryStoreInterface {
 
     public boolean serveNextRequest() {
         FreshProductRequested request = (FreshProductRequested) this.requestingFreshList.top();
+        float amount = request.getAmount();
         int barcode = request.getBarcodeId();
         Product product = (Product) this.storeProductsList.find(barcode);
-        if (product.getAmount() >= request.getAmount()) {
+        if (product.getAmount() >= amount) {
             Client client = (Client) this.clientsList.find(request.getCustomerId());
-            client.getBasket().addProduct(
-                    new FreshProduct(product.getName(),
-                            product.getPrice(),
-                            product.getBarcode(),
-                            request.getAmount(),
-                            true)
-            );
+            Product productInBasket = (Product) client.getBasket().getListProducts().find(barcode);
+            if (productInBasket != null) {
+                productInBasket.setAmount(productInBasket.getAmount() + amount);
+            } else {
+                client.getBasket().addProduct(
+                        new FreshProduct(product.getName(),
+                                product.getPrice(),
+                                barcode,
+                                amount,
+                                true)
+                );
+            }
             product.setAmount(product.getAmount() - request.getAmount());
             this.requestingFreshList.pop();
             System.out.println("Request successful" + "\n" + request);
