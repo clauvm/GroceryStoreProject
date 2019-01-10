@@ -1,3 +1,8 @@
+/**
+ * This class allows storing data in a simple way, it needs a specific capacity
+ *
+ * @author Claudia Vaquera
+ */
 public class Vector {
     protected Comparable data[];
     protected int count;
@@ -7,23 +12,50 @@ public class Vector {
         count = 0;
     }
 
+    /**
+     * Returns the size of the vector, this is different of the capacity
+     *
+     * @return count
+     */
     public int size() {
         return count;
     }
 
+    /**
+     * This method is to know if the vector is empty
+     *
+     * @return boolean, true if size is equal to 0
+     */
     public boolean isEmpty() {
-
         return size() == 0;
     }
 
+    /**
+     * Gets the data in a specific position
+     *
+     * @param index int
+     * @return data
+     */
     public Comparable get(int index) {
         return data[index];
     }
 
+    /**
+     * Sets the data in a specific position
+     *
+     * @param index int
+     * @param obj   Comparable
+     */
     public void set(int index, Comparable obj) {
         data[index] = obj;
     }
 
+    /**
+     * Verifies is the vector contains the object provided
+     *
+     * @param obj Comparable
+     * @return data or null if the object is not in the vector
+     */
     public Comparable contains(Comparable obj) {
         for (int i = 0; i < count; i++) {
             if (data[i].compareTo(obj) == 0) {
@@ -33,6 +65,12 @@ public class Vector {
         return null;
     }
 
+    /**
+     * Adds a new item in the first position
+     *
+     * @param vectorLength int
+     * @param item Comparable
+     */
     public void addFirst(int vectorLength, Comparable item) {
         if (count == vectorLength) {
             System.out.println("sorry, the vector is full and it's not possible to add an item in the first position");
@@ -46,40 +84,45 @@ public class Vector {
 
     }
 
+    /**
+     * Adds a new item in the last position
+     *
+     * @param item Comparable
+     */
     public void addLast(Comparable item) {
         data[count] = item;
         count++;
     }
 
-    //    public boolean binarySearch(Object key){
-//        int start = 0;
-//        int end = count - 1;
-//        while(start <= end){
-//            int middle = (start + end + 1)/2;
-//            if(key < data[middle]){
-//                end = middle - 1;
-//            }
-//            else if (key > data[middle]){
-//                start = middle + 1;
-//            }
-//            else
-//                return true;
-//        }
-//        return false;
-//    }
+    /**
+     * Gets first element of the vector
+     *
+     * @return element
+     */
     public Comparable getFirst() {
         return data[0];
     }
 
+    /**
+     * Gets last element of the vector
+     *
+     * @return last element
+     */
     public Comparable getLast() {
         return data[count - 1];
     }
 
+    /**
+     * Removes last element of the vector
+     */
     public void removeLast() {
         data[count - 1] = null;
         count--;
     }
 
+    /**
+     * Removes first element of the vector
+     */
     public void removeFirst() {
         for (int i = 0; i < count; i++) {
             data[i] = data[i + 1];
@@ -87,11 +130,9 @@ public class Vector {
         count--;
     }
 
-    public void addItem(Comparable item) {
-        data[count] = item;
-        count++;
-    }
-
+    /**
+     * Reverses the vector
+     */
     public void reverse() {
         int j = count - 1;
         for (int i = 0; i < count / 2; i++) {
@@ -102,38 +143,11 @@ public class Vector {
         }
     }
 
-    public Vector mirror() {
-        Vector v2 = new Vector(count * 2);
-        for (int i = 0; i < count; i++) {
-            v2.addLast(this.data[i]);
-            v2.addLast(this.data[i]);
-        }
-        return v2;
-    }
-
-    public Vector interleave(Vector secondVector) {
-//        int j = secondVector.size()-1;
-        Vector v4 = new Vector(secondVector.size() + this.size());
-        int currentSize = 0;
-        if (secondVector.size() > this.size()) {
-            currentSize = secondVector.size();
-        } else {
-            currentSize = this.size();
-        }
-        for (int i = 0; i < currentSize; i++) {
-            v4.addLast(this.data[i]);
-            v4.addLast(secondVector.data[i]);
-        }
-        return v4;
-    }
-
-//    public void print(){
-//        for (int i = 0; i<count; i++){
-//            System.out.print(data[i]+ " ");
-//        }
-//    }
-
-    //best way to print my vector
+    /**
+     * traverse the list and creates a string representation of the vector
+     *
+     * @return created string
+     */
     public String toString() {
         String values = "";
         for (int i = 0; i < count; i++) {

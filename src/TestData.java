@@ -1,9 +1,18 @@
+/**
+ * This class creates some data to avoid doing it manually, it's not important
+ * but it helps to test all the functionalities
+ */
 public class TestData {
     public TestData(GroceryStore groceryStore) {
-        createHarcodedData(groceryStore);
+        createHardcodedData(groceryStore);
     }
 
-    public void createHarcodedData(GroceryStore groceryStore) {
+    /**
+     * Creates data in the grocery store already created
+     *
+     * @param groceryStore GroceryStore
+     */
+    public void createHardcodedData(GroceryStore groceryStore) {
         groceryStore.addDepartment("Entry");
         groceryStore.addDepartment("Exit");
         groceryStore.addDepartment("Dairy Products");

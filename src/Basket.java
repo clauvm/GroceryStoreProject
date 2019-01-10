@@ -1,4 +1,9 @@
-/*Claudia Vaquera*/
+/**
+ * Basket class, it contains a list of products,
+ * in a dictionary, and the methods to handle it
+ *
+ * @author Claudia Vaquera
+ */
 public class Basket {
 
     private Dictionary listProducts;
@@ -19,12 +24,15 @@ public class Basket {
     /**
      * Remove products to the basket using index
      *
-     * @param barcodeId
+     * @param barcodeId int
      */
     public void removeItem(int barcodeId) {
-        this.listProducts.removebyIndex(barcodeId);
+        this.listProducts.removeByIndex(barcodeId);
     }
 
+    /**
+     * Remove first product in the basket
+     */
     public void removeFirstItem() {
         this.listProducts.remove();
     }
@@ -32,7 +40,7 @@ public class Basket {
     /**
      * Get list of products
      *
-     * @return
+     * @return list of products
      */
     public Dictionary getListProducts() {
         return this.listProducts;

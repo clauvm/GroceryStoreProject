@@ -2,12 +2,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
+/**
+ * This class allows the user interaction with the program using the console
+ *
+ * @author Claudia Vaquera
+ */
 public class UserOptions {
     public UserOptions(GroceryStore groceryStore) throws IOException {
         displayOptions(groceryStore);
     }
 
+    /**
+     * Display the options
+     *
+     * @param groceryStore GroceryStore
+     * @throws IOException
+     */
     private void displayOptions(GroceryStore groceryStore) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int option = 0;
@@ -33,7 +43,8 @@ public class UserOptions {
             System.out.println("17.- Print Unserved Request");
             System.out.println("18.- Checkout");
             System.out.println("19.- Print Shopping History");
-            //additional functionality
+
+            /* Additional functionality, this wasn't requested but it could be useful */
             System.out.println("20.- Print Shopping List");
             System.out.println("21.- Print Departments Connections");
             System.out.println("22.- Exit");
@@ -43,63 +54,83 @@ public class UserOptions {
                     case 1:
                         groceryStore.fillInformationNewDepartment();
                         break;
+
                     case 2:
                         groceryStore.fillInformationTwoDepartments(0);
                         break;
+
                     case 3:
                         groceryStore.fillInformationTwoDepartments(1);
                         break;
+
                     case 4:
                         groceryStore.fillInformationNewClient();
                         break;
+
                     case 5:
                         groceryStore.fillInformationNewProduct(0);
                         break;
+
                     case 6:
                         groceryStore.fillInformationNewProduct(1);
                         break;
+
                     case 7:
                         groceryStore.printStoreProducts();
                         break;
+
                     case 8:
                         groceryStore.fillInformationToAddOrRemoveProducts(3);
                         break;
+
                     case 9:
                         groceryStore.requestClientId(2);
                         break;
+
                     case 10:
                         groceryStore.requestClientId(3);
                         break;
+
                     case 11:
                         groceryStore.fillInformationToAddOrRemoveProducts(0);
                         break;
+
                     case 12:
                         groceryStore.fillInformationToAddOrRemoveProducts(1);
                         break;
+
                     case 13:
-                        groceryStore.printOrComputeForClient(0);
+                        groceryStore.requestClientId(4);
                         break;
+
                     case 14:
-                        groceryStore.printOrComputeForClient(1);
+                        groceryStore.requestClientId(5);
                         break;
+
                     case 15:
                         groceryStore.fillInformationToAddOrRemoveProducts(2);
                         break;
+
                     case 16:
                         groceryStore.serveNextRequest();
                         break;
+
                     case 17:
                         groceryStore.printUnservedRequests();
                         break;
+
                     case 18:
                         groceryStore.requestClientId(0);
                         break;
+
                     case 19:
                         groceryStore.requestClientId(1);
                         break;
+
                     case 20:
-                        groceryStore.requestClientId(4);
+                        groceryStore.requestClientId(6);
                         break;
+
                     case 21:
                         groceryStore.printDepartmentsConnections();
                         break;

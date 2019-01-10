@@ -1,3 +1,9 @@
+/**
+ * Main class of the project, it calls to the TestData and UserOptions classes
+ *
+ * @author Claudia Vaquera
+ */
+
 import java.io.IOException;
 
 public class Main {

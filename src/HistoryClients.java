@@ -1,3 +1,9 @@
+/**
+ * HistoryClients
+ * Linked list to the purchase history of each client
+ *
+ * @author Claudia Vaquera
+ */
 import java.math.BigDecimal;
 
 public class HistoryClients {
