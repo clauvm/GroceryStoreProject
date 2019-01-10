@@ -14,6 +14,7 @@ public class TestData {
      */
     public void createHardcodedData(GroceryStore groceryStore) {
         groceryStore.addDepartment("Entry");
+        groceryStore.addDepartment("Fresh Products"); //Department where the client request a fresh product
         groceryStore.addDepartment("Exit");
         groceryStore.addDepartment("Dairy Products");
         groceryStore.addDepartment("Fruits");
@@ -28,6 +29,7 @@ public class TestData {
         groceryStore.addDepartment("Pastry");
         groceryStore.addDepartment("Pastas");
         groceryStore.addDepartment("Cereal");
+        groceryStore.addDepartment("Snacks");
 
         groceryStore.addClient("Claudia");
         groceryStore.addClient("Hugo");
@@ -54,32 +56,37 @@ public class TestData {
         groceryStore.addProduct("Cookies", "Chip's ahoy", 2.5f, 222, 9);
         groceryStore.addProduct("Candies", "Skittles", 1.25f, 223, 31);
         groceryStore.addProduct("Spices", "Paprika", 2.5f, 224, 25);
+        groceryStore.addProduct("Snacks", "Lay's Paprika", 1.36f, 225, 10);
 
         groceryStore.addFreshProduct("Chicken", 15.45f, 987, 9.5f);
         groceryStore.addFreshProduct("Chicken wings", 17.5f, 876, 8.55f);
         groceryStore.addFreshProduct("Beef steak", 14.3f, 765, 10.85f);
         groceryStore.addFreshProduct("Filet", 14.75f, 654, 15.95f);
 
-        groceryStore.connectDepartments("Entry", "Dairy Products");
-        groceryStore.connectDepartments("Entry", "Fruits");
-        groceryStore.connectDepartments("Dairy Products", "Cookies");
-        groceryStore.connectDepartments("Fruits", "Vegetables");
+        groceryStore.connectDepartments("Entry", "Pastas");
+        groceryStore.connectDepartments("Entry", "Spices");
+        groceryStore.connectDepartments("Pastas", "Cereal");
+        groceryStore.connectDepartments("Spices", "Bakery");
+        groceryStore.connectDepartments("Spices", "Pastry");
+        groceryStore.connectDepartments("Cereal", "Coffee");
+        groceryStore.connectDepartments("Bakery", "Teas");
+        groceryStore.connectDepartments("Bakery", "Fruits");
+        groceryStore.connectDepartments("Pastry", "Fruits");
+        groceryStore.connectDepartments("Pastry", "Vegetables");
+        groceryStore.connectDepartments("Coffee", "Cookies");
+        groceryStore.connectDepartments("Teas", "Coffee");
+        groceryStore.connectDepartments("Fruits", "Dairy Products");
+        groceryStore.connectDepartments("Cookies", "Snacks");
+        groceryStore.connectDepartments("Cookies", "Candies");
+        groceryStore.connectDepartments("Dairy Products", "Cheese");
+        groceryStore.connectDepartments("Dairy Products", "Fresh Products");
+        groceryStore.connectDepartments("Dairy Products", "Exit");
+        groceryStore.connectDepartments("Snacks", "Exit");
+        groceryStore.connectDepartments("Candies", "Exit");
+
+        groceryStore.connectDepartments("Bakery", "Cookies");
         groceryStore.connectDepartments("Fruits", "Candies");
-        groceryStore.connectDepartments("Cookies", "Cheese");
-        groceryStore.connectDepartments("Vegetables", "Bakery");
-        groceryStore.connectDepartments("Vegetables", "Teas");
-        groceryStore.connectDepartments("Vegetables", "Coffee");
-        groceryStore.connectDepartments("Candies", "Coffee");
-        groceryStore.connectDepartments("Candies", "Spices");
-        groceryStore.connectDepartments("Cheese", "Teas");
-        groceryStore.connectDepartments("Cheese", "Bakery");
-        groceryStore.connectDepartments("Coffee", "Pastry");
-        groceryStore.connectDepartments("Bakery", "Pastas");
-        groceryStore.connectDepartments("Bakery", "Cereal");
-        groceryStore.connectDepartments("Pastry", "Exit");
-        groceryStore.connectDepartments("Pastas", "Exit");
-        groceryStore.connectDepartments("Cereal", "Exit");
-        groceryStore.connectDepartments("Coffee", "Cereal");
+        groceryStore.connectDepartments("Vegetables", "Cookies");
 
         groceryStore.addToBasket(123, 1, 1);
         groceryStore.addToBasket(567, 2, 1);
@@ -95,7 +102,7 @@ public class TestData {
 
         groceryStore.addToBasket(115, 2, 1);
         groceryStore.addToBasket(222, 5, 2);
-        groceryStore.addToBasket(117, 8, 1);
+        groceryStore.addToBasket(117, 2, 1);
 
         groceryStore.addToShoppingList(119, 1, 1);
         groceryStore.addToShoppingList(221, 1, 1);

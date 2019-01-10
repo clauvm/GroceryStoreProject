@@ -16,8 +16,8 @@ public class ShoppingListClients {
      *
      * @param newProduct Product
      */
-    public void addNewItem(Product newProduct) {
-        this.shoppingList.add(newProduct.getBarcode(), newProduct);
+    public void addNewItem(ProductToShoppingList newProduct) {
+        this.shoppingList.add(newProduct.getBarcodeId(), newProduct);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ShoppingListClients {
     public String toString() {
         String values = "";
         for (int i = 0; i < this.shoppingList.size(); i++) {
-            Product product = (Product) this.shoppingList.get(i);
+            ProductToShoppingList product = (ProductToShoppingList) this.shoppingList.get(i);
             values += "Name: " + product.getName() + ", qty: " + product.getAmount() + "\n";
         }
         return values;

@@ -249,15 +249,14 @@ public class GroceryStore implements GroceryStoreInterface {
             return;
         }
         Client client = (Client) this.clientsList.find(customerId);
-        Product product = (Product) this.storeProductsList.find(barcodeId);
-        client.getShoppingList().addNewItem(
-                new GenericProduct(product.getDepartment(),
-                        product.getName(),
-                        product.getPrice(),
-                        barcodeId,
-                        count,
-                        false)
-        );
+        Product productInStore = (Product) this.storeProductsList.find(barcodeId);
+        ProductToShoppingList product = new ProductToShoppingList(
+                customerId,
+                barcodeId,
+                productInStore.getName(),
+                count,
+                productInStore.getDepartment() != null ? productInStore.getDepartment() : "Fresh Products");
+        client.getShoppingList().addNewItem(product);
     }
 
     /**
@@ -555,7 +554,7 @@ public class GroceryStore implements GroceryStoreInterface {
         ShoppingListClients clientList = client.getShoppingList();
         LinkedList departmentShoppingList = new LinkedList();
         for (int i = 0; i < clientList.getSize(); i++) {
-            Product product = (Product) clientList.getShoppingList().get(i);
+            ProductToShoppingList product = (ProductToShoppingList) clientList.getShoppingList().get(i);
             if (departmentShoppingList.contains(product.getDepartment()) == -1) {
                 departmentShoppingList.addFirst(product.getDepartment());
             }
